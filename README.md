@@ -32,11 +32,15 @@
 
 ------
 
-
-
 # 分布式
 
 ## 分布式事务
 
 [用到分布式事务嘛?为什么用这种方案,有其他方案嘛?](https://github.com/DragonChilde/eight-part-essay/blob/main/%E5%88%86%E5%B8%83%E5%BC%8F/%E5%88%86%E5%B8%83%E5%BC%8F%E4%BA%8B%E5%8A%A1.md)
+
+------
+
+# 网络基础
+
+[https原理，工作流程](https://github.com/DragonChilde/eight-part-essay/blob/main/%E7%BD%91%E7%BB%9C%E5%9F%BA%E7%A1%80/https%E5%8E%9F%E7%90%86%EF%BC%8C%E5%B7%A5%E4%BD%9C%E6%B5%81%E7%A8%8B.md)
 
