@@ -52,6 +52,8 @@
 
 [用到分布式事务嘛?为什么用这种方案,有其他方案嘛?](https://github.com/DragonChilde/eight-part-essay/blob/main/%E5%88%86%E5%B8%83%E5%BC%8F/%E5%88%86%E5%B8%83%E5%BC%8F%E4%BA%8B%E5%8A%A1.md)
 
+[高并发下如何设计秒杀系统？](https://github.com/DragonChilde/eight-part-essay/blob/main/%E5%88%86%E5%B8%83%E5%BC%8F/%E9%AB%98%E5%B9%B6%E5%8F%91%E4%B8%8B%E5%A6%82%E4%BD%95%E8%AE%BE%E8%AE%A1%E7%A7%92%E6%9D%80%E7%B3%BB%E7%BB%9F.md)
+
 ------
 
 # 网络基础
