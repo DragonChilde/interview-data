@@ -36,6 +36,8 @@
 
 [你们数据库的高可用是怎么实现的?](https://github.com/DragonChilde/eight-part-essay/blob/main/Mysql/%E4%BD%A0%E4%BB%AC%E6%95%B0%E6%8D%AE%E5%BA%93%E7%9A%84%E9%AB%98%E5%8F%AF%E7%94%A8%E6%98%AF%E6%80%8E%E4%B9%88%E5%AE%9E%E7%8E%B0%E7%9A%84.md)
 
+[读写分离的场景下,怎么保证从数据库读到最新的数据?](https://github.com/DragonChilde/eight-part-essay/blob/main/Mysql/%E8%AF%BB%E5%86%99%E5%88%86%E7%A6%BB%E7%9A%84%E5%9C%BA%E6%99%AF%E4%B8%8B%2C%E6%80%8E%E4%B9%88%E4%BF%9D%E8%AF%81%E4%BB%8E%E6%95%B0%E6%8D%AE%E5%BA%93%E8%AF%BB%E5%88%B0%E6%9C%80%E6%96%B0%E7%9A%84%E6%95%B0%E6%8D%AE.md)
+
 ------
 
 # Redis
