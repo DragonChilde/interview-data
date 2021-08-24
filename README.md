@@ -48,3 +48,5 @@
 
 [https原理，工作流程](https://github.com/DragonChilde/eight-part-essay/blob/main/%E7%BD%91%E7%BB%9C%E5%9F%BA%E7%A1%80/https%E5%8E%9F%E7%90%86%EF%BC%8C%E5%B7%A5%E4%BD%9C%E6%B5%81%E7%A8%8B.md)
 
+[讲一讲7层网络模型，tcp的为什么要三次握手](https://github.com/DragonChilde/eight-part-essay/blob/main/%E7%BD%91%E7%BB%9C%E5%9F%BA%E7%A1%80/%E8%AE%B2%E4%B8%80%E8%AE%B27%E5%B1%82%E7%BD%91%E7%BB%9C%E6%A8%A1%E5%9E%8B%EF%BC%8Ctcp%E7%9A%84%E4%B8%BA%E4%BB%80%E4%B9%88%E8%A6%81%E4%B8%89%E6%AC%A1%E6%8F%A1%E6%89%8B.Md)
+
