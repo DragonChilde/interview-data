@@ -38,6 +38,8 @@
 
 [读写分离的场景下,怎么保证从数据库读到最新的数据?](https://github.com/DragonChilde/eight-part-essay/blob/main/Mysql/%E8%AF%BB%E5%86%99%E5%88%86%E7%A6%BB%E7%9A%84%E5%9C%BA%E6%99%AF%E4%B8%8B%2C%E6%80%8E%E4%B9%88%E4%BF%9D%E8%AF%81%E4%BB%8E%E6%95%B0%E6%8D%AE%E5%BA%93%E8%AF%BB%E5%88%B0%E6%9C%80%E6%96%B0%E7%9A%84%E6%95%B0%E6%8D%AE.md)
 
+[**如何保证MySQL数据不丢？**](https://github.com/DragonChilde/eight-part-essay/blob/main/Mysql/%E5%A6%82%E4%BD%95%E4%BF%9D%E8%AF%81MySQL%E6%95%B0%E6%8D%AE%E4%B8%8D%E4%B8%A2.md)
+
 ------
 
 # Redis
