@@ -62,3 +62,8 @@
 
 [讲一讲7层网络模型，tcp的为什么要三次握手](https://github.com/DragonChilde/eight-part-essay/blob/main/%E7%BD%91%E7%BB%9C%E5%9F%BA%E7%A1%80/%E8%AE%B2%E4%B8%80%E8%AE%B27%E5%B1%82%E7%BD%91%E7%BB%9C%E6%A8%A1%E5%9E%8B%EF%BC%8Ctcp%E7%9A%84%E4%B8%BA%E4%BB%80%E4%B9%88%E8%A6%81%E4%B8%89%E6%AC%A1%E6%8F%A1%E6%89%8B.Md)
 
+------
+
+# Redis
+
+[五种数据类型的使用场景](https://github.com/DragonChilde/eight-part-essay/blob/main/Redis/%E4%BA%94%E7%A7%8D%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B%E7%9A%84%E4%BD%BF%E7%94%A8%E5%9C%BA%E6%99%AF.md)
