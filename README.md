@@ -67,3 +67,6 @@
 # Redis
 
 [五种数据类型的使用场景](https://github.com/DragonChilde/eight-part-essay/blob/main/Redis/%E4%BA%94%E7%A7%8D%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B%E7%9A%84%E4%BD%BF%E7%94%A8%E5%9C%BA%E6%99%AF.md)
+
+[对不起，网上的那些 Redis 分布式锁的用法都是错的！](https://www.xttblog.com/?p=4598)
+
