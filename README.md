@@ -2,8 +2,6 @@
 
 ------
 
-
-
 # Java
 
 ## 基础
@@ -78,3 +76,8 @@
 
 [对不起，网上的那些 Redis 分布式锁的用法都是错的！](https://www.xttblog.com/?p=4598)
 
+------
+
+数据结构和算法
+
+[十大经典排序(Java)](https://github.com/DragonChilde/eight-part-essay/blob/main/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95/%E5%8D%81%E5%A4%A7%E7%BB%8F%E5%85%B8%E6%8E%92%E5%BA%8F(Java).md)
