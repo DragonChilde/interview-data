@@ -10,7 +10,7 @@
 
 ## JUC
 
-AQS原理
+[AQS原理](https://github.com/DragonChilde/eight-part-essay/blob/main/Java/juc/AQS.md)
 
 ### volatile
 
