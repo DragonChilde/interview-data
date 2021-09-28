@@ -254,3 +254,666 @@ localhost:6379> set k1 v1
 
 ## redis LRU 算法
 
+LRU 是 Least Recently Used 的缩写，即最近最少使用，是一种常用的页面置换算法，每次选择最近最久未使用的页面予以淘汰
+
+------
+
+### LRU 算法题来源
+
+[146. LRU 缓存机制](https://leetcode-cn.com/problems/lru-cache/)
+
+------
+
+运用你所掌握的数据结构，设计和实现一个 [LRU (最近最少使用) 缓存机制](https://baike.baidu.com/item/LRU) 。
+
+实现 `LRUCache`类：
+
+1. `LRUCache(int capacity)`以正整数作为容量 `capacity`初始化 LRU 缓存
+2. `int get(int key)` 如果关键字 `key`存在于缓存中，则返回关键字的值，否则返回 -1 。
+3. `void put(int key, int value) `如果关键字已经存在，则变更其数据值；如果关键字不存在，则插入该组「关键字-值」。当缓存容量达到上限时，它应该在写入新数据之前删除最久未使用的数据值，从而为新的数据值留出空间。
+
+------------------------------------------------
+```
+进阶：你是否可以在 O(1) 时间复杂度内完成这两种操作？
+
+示例:
+输入
+["LRUCache", "put", "put", "get", "put", "get", "put", "get", "get", "get"]
+[[2], [1, 1], [2, 2], [1], [3, 3], [2], [4, 4], [1], [3], [4]]
+输出
+[null, null, null, 1, null, -1, null, -1, 3, 4]
+
+解释
+LRUCache lRUCache = new LRUCache(2);
+lRUCache.put(1, 1); // 缓存是 {1=1}
+lRUCache.put(2, 2); // 缓存是 {1=1, 2=2}
+lRUCache.get(1);    // 返回 1
+lRUCache.put(3, 3); // 该操作会使得关键字 2 作废，缓存是 {1=1, 3=3}
+lRUCache.get(2);    // 返回 -1 (未找到)
+lRUCache.put(4, 4); // 该操作会使得关键字 1 作废，缓存是 {4=4, 3=3}
+lRUCache.get(1);    // 返回 -1 (未找到)
+lRUCache.get(3);    // 返回 3
+lRUCache.get(4);    // 返回 4
+```
+
+------
+
+### LRU 算法设计思想
+
+查找和插入的时间复杂度为 `O(1)`，HashMap 没得跑了，但是 HashMap 是无序的集合，怎么样将其改造为有序集合呢？答案就是在各个 Node 节点之间增加 `prev` 指针和 `next` 指针，构成双向链表
+
+![](http://120.77.237.175:9080/photos/eight/redis/13.jpg)
+
+LRU 的算法核心是哈希链表，本质就是 `HashMap+DoubleLinkedList` 时间复杂度是O(1)，哈希表+双向链表的结合体，下面这幅动图完美诠释了 `HashMap+DoubleLinkedList` 的工作原理
+
+![](http://120.77.237.175:9080/photos/eight/redis/14.gif)
+
+------
+
+### LRU 算法编码实现
+
+#### 借助JDK自带的**LinkedHashMap**实现
+
+`LinkedHashMap` 的注释中写明了： `LinkedHashMap` 非常适合用来构建 LRU 缓存
+
+```
+ * <p>A special {@link #LinkedHashMap(int,float,boolean) constructor} is
+ * provided to create a linked hash map whose order of iteration is the order
+ * in which its entries were last accessed, from least-recently accessed to
+ * most-recently (<i>access-order</i>).  This kind of map is well-suited to
+ * building LRU caches.  Invoking the {@code put}, {@code putIfAbsent},
+ * {@code get}, {@code getOrDefault}, {@code compute}, {@code computeIfAbsent},
+ * {@code computeIfPresent}, or {@code merge} methods results
+ * in an access to the corresponding entry (assuming it exists after the
+ * invocation completes). The {@code replace} methods only result in an access
+ * of the entry if the value is replaced.  The {@code putAll} method generates one
+ * entry access for each mapping in the specified map, in the order that
+ * key-value mappings are provided by the specified map's entry set iterator.
+ * <i>No other methods generate entry accesses.</i>  In particular, operations
+ * on collection-views do <i>not</i> affect the order of iteration of the
+ * backing map.
+```
+
+------
+
+```java
+package com.interview.demo.leetcode;
+
+import java.util.LinkedHashMap;
+import java.util.Map;
+
+/**
+ * @title: LRUCacheDemo
+ * @Author Wen
+ * @Date: 28/9/2021 10:14 AM
+ * @Version 1.0
+ */
+public class LRUCacheDemo {
+
+
+    LinkedHashMap<Integer, Integer> LRUCache;
+
+
+    //缓存容量
+    private int capacity;
+
+    public LRUCacheDemo(int capacity) {
+
+        LRUCache = new LinkedHashMap<Integer, Integer>(capacity, 0.75F, true) {
+
+            /**
+             * 用于判断是否需要删除最近最久未使用的节点
+             *
+             * @param eldest
+             * @return
+             */
+            @Override
+            protected boolean removeEldestEntry(Map.Entry<Integer, Integer> eldest) {
+                return super.size() > capacity;
+            }
+        };
+    }
+
+    public int get(int key) {
+        return LRUCache.getOrDefault(key, -1);
+    }
+
+    public void put(int key, int value) {
+        LRUCache.put(key, value);
+    }
+
+    @Override
+    public String toString() {
+        return LRUCache.toString();
+    }
+
+    public static void main(String[] args) {
+
+        LRUCacheDemo lruCacheDemo = new LRUCacheDemo(3);
+        lruCacheDemo.put(1, 1);
+        lruCacheDemo.put(2, 2);
+        lruCacheDemo.put(3, 3);
+        System.out.println(lruCacheDemo.LRUCache.keySet());  //[1, 2, 3]
+
+        lruCacheDemo.put(4, 4);
+        System.out.println(lruCacheDemo.LRUCache.keySet());  //[2, 3, 4]
+
+        lruCacheDemo.put(3, 3);
+        System.out.println(lruCacheDemo.LRUCache.keySet());  //[2, 4, 3]
+        lruCacheDemo.put(3, 3);
+        System.out.println(lruCacheDemo.LRUCache.keySet());  //[2, 4, 3]
+        lruCacheDemo.put(3, 3);
+        System.out.println(lruCacheDemo.LRUCache.keySet());  //[2, 4, 3]
+
+        lruCacheDemo.put(5, 5);
+        System.out.println(lruCacheDemo.LRUCache.keySet());  //[4, 3, 5]
+
+    }
+}
+```
+
+> **为何要重写 `boolean removeEldestEntry(Map.Entry<K, V> eldest)` 方法**
+
+先来看看 `LinkedHashMap` 中的 `boolean removeEldestEntry(Map.Entry<K, V> eldest)` 方法，直接 `return false`，缓存爆就爆，反正就是不会删除 `EldestEntry`
+
+```java
+    /** @return   <tt>true</tt> if the eldest entry should be removed
+     *           from the map; <tt>false</tt> if it should be retained.
+     */
+    protected boolean removeEldestEntry(Map.Entry<K,V> eldest) {
+        return false;
+    }
+```
+
+`boolean removeEldestEntry(Map.Entry<K, V> eldest)` 方法在` void afterNodeInsertion(boolean evict)` 方法中被调用，只有当 `boolean removeEldestEntry(Map.Entry<K, V> eldest) `方法返回 true 时，才能够删除 `EldestEntry`
+
+```java
+    void afterNodeInsertion(boolean evict) { // possibly remove eldest
+        LinkedHashMap.Entry<K,V> first;
+        if (evict && (first = head) != null && removeEldestEntry(first)) {
+            K key = first.key;
+            removeNode(hash(key), key, null, false, true);
+        }
+    }
+```
+
+因此我们重写之后的判断条件为：如果 `LinkedHashMap` 中存储的元素个数已经大于缓存容量 `capacity`，则返回 `true`，表示允许删除 `EldestEntry`；否则返回 `false`，表示无需删除 `EldestEntry`
+
+------
+
+**举例说明构造函数中的 `accessOrder` 的含义**
+
+**构造函数中的 `accessOrder` 字段**
+
+在 `LRUCacheDemo` 的构造方法中，我们调用了 `LinkedHashMap` 的构造方法，其中有一个字段为 `accessOrder`
+
+```java
+    public LinkedHashMap(int initialCapacity,
+                         float loadFactor,
+                         boolean accessOrder) {
+        super(initialCapacity, loadFactor);
+        this.accessOrder = accessOrder;
+    }
+```
+
+`accessOrder = true` 和 `accessOrder = false` 的情况
+
+当 `accessOrder = true` 时，每次使用 key 时（put 或者 get 时），都将 key 对应的数据移动到队尾（右边），表示最近经常使用；当 accessOrder = false 时，key 的顺序为插入双向链表时的顺序
+
+`accessOrder = true`时
+
+```
+[1, 2, 3]
+[2, 3, 4]
+----区别如下---
+[2, 4, 3]
+[2, 4, 3]
+[2, 4, 3]
+[4, 3, 5]
+```
+
+`accessOrder = false`时
+
+```
+[1, 2, 3]
+[2, 3, 4]
+----区别如下---
+[2, 3, 4]
+[2, 3, 4]
+[2, 3, 4]
+[3, 4, 5]
+```
+
+------
+
+**`LinkedHashMap` 的 `put()` 方法**
+
+`LinkedHashMap` 的 `put()` 方法其实就是 `HashMap` 的 `put()` 方法，`LinkedHashMap`` 就是 `HashMap`？？？其实并不是。。。
+
+> 下面是`HashMap`源码部分
+
+```java
+    final V putVal(int hash, K key, V value, boolean onlyIfAbsent,
+                   boolean evict) {
+        Node<K,V>[] tab; Node<K,V> p; int n, i;
+        if ((tab = table) == null || (n = tab.length) == 0)
+            n = (tab = resize()).length;
+        if ((p = tab[i = (n - 1) & hash]) == null)
+            tab[i] = newNode(hash, key, value, null);
+        else {
+            Node<K,V> e; K k;
+            if (p.hash == hash &&
+                ((k = p.key) == key || (key != null && key.equals(k))))
+                e = p;
+            else if (p instanceof TreeNode)
+                e = ((TreeNode<K,V>)p).putTreeVal(this, tab, hash, key, value);
+            else {
+                for (int binCount = 0; ; ++binCount) {
+                    if ((e = p.next) == null) {
+                        p.next = newNode(hash, key, value, null);
+                        if (binCount >= TREEIFY_THRESHOLD - 1) // -1 for 1st
+                            treeifyBin(tab, hash);
+                        break;
+                    }
+                    if (e.hash == hash &&
+                        ((k = e.key) == key || (key != null && key.equals(k))))
+                        break;
+                    p = e;
+                }
+            }
+            if (e != null) { // existing mapping for key
+                V oldValue = e.value;
+                if (!onlyIfAbsent || oldValue == null)
+                    e.value = value;
+                afterNodeAccess(e);		//主要是这里
+                return oldValue;
+            }
+        }
+        ++modCount;
+        if (++size > threshold)
+            resize();
+        afterNodeInsertion(evict);	//主要是这里
+        return null;
+    }
+```
+
+在 `putval()` 方法的调用了两个方法：`afterNodeAccess(e)` 方法和 `afterNodeInsertion(evict)` 方法，这两个方法就是专门针对于 `LinkedHashMap` 写的方法
+
+在 HashMap 中这些方法均为空实现的方法，没有任何代码逻辑，需要推迟到子类 `LinkedHashMap` 中去实现，等等，听着好像有点耳熟，这不就是模板方法设计模式嘛~
+
+```java
+    // Callbacks to allow LinkedHashMap post-actions
+    void afterNodeAccess(Node<K,V> p) { }
+    void afterNodeInsertion(boolean evict) { }
+    void afterNodeRemoval(Node<K,V> p) { }
+```
+
+在 `LinkedHashMap`的 `void afterNodeAccess(Node<K,V> e)`方法中：如果设置了` accessOrder = true` 时，则每次使用 `key`时（put 或者 get 时），都将 `key`对应的数据移动到队尾（右边），表示这是最近经常使用的节点
+
+```java
+    void afterNodeAccess(Node<K,V> e) { // move node to last
+        LinkedHashMap.Entry<K,V> last;
+        if (accessOrder && (last = tail) != e) {	//accessOrder为true时才会进入判断
+            LinkedHashMap.Entry<K,V> p =
+                (LinkedHashMap.Entry<K,V>)e, b = p.before, a = p.after;
+            p.after = null;
+            if (b == null)
+                head = a;
+            else
+                b.after = a;
+            if (a != null)
+                a.before = b;
+            else
+                last = b;
+            if (last == null)
+                head = p;
+            else {
+                p.before = last;
+                last.after = p;
+            }
+            tail = p;
+            ++modCount;
+        }
+    }
+```
+
+在 `LinkedHashMap `的 `void afterNodeInsertion(boolean evict)` 方法中：如果头指针不为空并且当前需要删除老节点，则执行 `removeNode(hash(key), key, null, false, true)` 方法删除 `EldestEntry`（若 `accessOrder = true` 时，`EldestEntry `表示最近最少使用的数据，若 `accessOrder = false` 时，`EldestEntry`表示最先插入链表的节点）
+
+```java
+    void afterNodeInsertion(boolean evict) { // possibly remove eldest
+        LinkedHashMap.Entry<K,V> first;
+        if (evict && (first = head) != null && removeEldestEntry(first)) {
+            K key = first.key;
+            removeNode(hash(key), key, null, false, true);
+        }
+    }
+```
+
+
+
+#### 完全手写
+
+   图解双向队列
+
+   1. `DoubleLinkedList` 双向链表的初始化
+
+      ![](http://120.77.237.175:9080/photos/eight/redis/15.jpg)
+
+   2. 双向链表插入节点
+
+      ![](http://120.77.237.175:9080/photos/eight/redis/16.jpg)
+
+   3. 双向链表删除节点
+
+      ![](http://120.77.237.175:9080/photos/eight/redis/17.jpg)
+
+------
+
+1. 先定义 Node 类作为数据的承载体
+
+   ```java
+       // 1. 构造一个Node节点作为数据载体
+       class Node<K, V> {
+           private K key;
+           private V value;
+           private Node prev;
+           private Node next;
+   
+           public Node() {
+               this.prev = this.next = null;
+           }
+   
+           public Node(K key, V value) {
+               this.key = key;
+               this.value = value;
+               this.prev = this.next = null;
+           }
+       }
+   ```
+
+2. 定义双向链表，里面存放的就是 Node 对象，Node 节点之间通过 `prev` 和 `next` 指针连接起来
+
+   ```
+     // 2. 构建一个虚拟的双向链表,里面存放的就是Node
+       class DoubleLinkedList<K, V> {
+           Node<K, V> head;
+           Node<K, V> tail;
+   
+   
+           public DoubleLinkedList() {
+               this.head = new Node<>();
+               this.tail = new Node<>();
+   
+               this.head.next = this.tail;
+               this.tail.prev = this.head;
+           }
+   
+   
+           // 3. 添加到节点头部
+           public void addHead(Node<K, V> node) {
+   
+   
+               node.prev = head;
+               node.next = head.next;
+               head.next.prev = node;
+               head.next = node;
+           }
+   
+           // 4. 删除节点
+           public void removeNode(Node<K, V> node) {
+   
+               node.next.prev = node.prev;
+               node.prev.next = node.next;
+               node.prev = null;
+               node.next = null;
+           }
+   
+           // 5. 获得最后一个节点
+           public Node<K, V> getLast() {
+   
+               if (tail.prev == head) {
+                   return null;
+               }
+               return tail.prev;
+           }
+       }
+   ```
+
+3. 通过 `HashMap` 和 `DoubleLinkedList` 构建 `LinkedHashMap`，我们这里可是将最近最常使用的节点放在了双向链表的头部（和 `LinkedHashMap` 不同哦）
+
+   ```java
+       private int cacheSize;
+       Map<Integer, Node<Integer, Integer>> map;
+       DoubleLinkedList<Integer, Integer> doubleLinkedList;
+   
+       public LRUCacheDemo2(int cacheSize) {
+           this.cacheSize = cacheSize; //缓存大小
+           map = new HashMap<>();  //根据HashMap进行查找
+           doubleLinkedList = new DoubleLinkedList<>();
+       }
+   
+       public int get(int key) {
+           if (!map.containsKey(key)) {
+               return -1;
+           }
+   
+           Node<Integer, Integer> node = map.get(key);
+           doubleLinkedList.removeNode(node);
+           doubleLinkedList.addHead(node);
+   
+           return node.value;
+       }
+   
+       public void put(int key, int value) {
+           if (map.containsKey(key)) { //判断当前key是否存在,存在则更新
+               Node<Integer, Integer> node = map.get(key);
+               node.value = value;
+               map.put(key, node);
+               doubleLinkedList.removeNode(node);
+               doubleLinkedList.addHead(node);
+           } else {
+   
+               if (map.size() == cacheSize) {  //判断当前map是否已经满了
+                   Node<Integer, Integer> last = doubleLinkedList.getLast();
+                   map.remove(last.key);
+                   doubleLinkedList.removeNode(last);
+   
+               }
+   
+               //新增Node节点
+               Node<Integer, Integer> node = new Node<>(key, value);
+               map.put(key, node);
+               doubleLinkedList.addHead(node);
+           }
+       }
+   ```
+
+4. 测试
+
+   ```java
+       public static void main(String[] args) {
+           LRUCacheDemo2 lruCacheDemo2 = new LRUCacheDemo2(3);
+           lruCacheDemo2.put(1, 1);
+           lruCacheDemo2.put(2, 2);
+           lruCacheDemo2.put(3, 3);
+           System.out.println(lruCacheDemo2.map.keySet());
+   
+           lruCacheDemo2.put(4, 4);
+           System.out.println(lruCacheDemo2.map.keySet());
+   
+           lruCacheDemo2.put(3, 3);
+           System.out.println(lruCacheDemo2.map.keySet());
+           lruCacheDemo2.put(3, 3);
+           System.out.println(lruCacheDemo2.map.keySet());
+           lruCacheDemo2.put(3, 3);
+           System.out.println(lruCacheDemo2.map.keySet());
+   
+           lruCacheDemo2.put(5, 5);
+           System.out.println(lruCacheDemo2.map.keySet());
+   
+           lruCacheDemo2.put(6, 6);
+           System.out.println(lruCacheDemo2.map.keySet());
+       }
+   ```
+
+   结果如下:这个顺序是不对滴，因为这是 `HashMap` 中 `key` 的顺序，并不是 `DoubleLinkedList` 中 `key` 的顺序，但至少可以说明最近最少使用的数据已经被删除了
+
+   ```
+   [1, 2, 3]
+   [2, 3, 4]
+   [2, 3, 4]
+   [2, 3, 4]
+   [2, 3, 4]
+   [3, 4, 5]
+   [3, 5, 6]
+   ```
+
+完整代码
+
+```java
+package com.interview.demo.leetcode;
+
+import java.util.HashMap;
+import java.util.Map;
+
+/**
+ * @title: LRUCacheDemo2
+ * @Author Wen
+ * @Date: 28/9/2021 1:04 PM
+ * @Version 1.0
+ */
+public class LRUCacheDemo2 {
+
+    // 1. 构造一个Node节点作为数据载体
+    class Node<K, V> {
+        private K key;
+        private V value;
+        private Node prev;
+        private Node next;
+
+        public Node() {
+            this.prev = this.next = null;
+        }
+
+        public Node(K key, V value) {
+            this.key = key;
+            this.value = value;
+            this.prev = this.next = null;
+        }
+    }
+
+    // 2. 构建一个虚拟的双向链表,里面存放的就是Node
+    class DoubleLinkedList<K, V> {
+        Node<K, V> head;
+        Node<K, V> tail;
+
+
+        public DoubleLinkedList() {
+            this.head = new Node<>();
+            this.tail = new Node<>();
+
+            this.head.next = this.tail;
+            this.tail.prev = this.head;
+        }
+
+
+        // 3. 添加到节点头部
+        public void addHead(Node<K, V> node) {
+
+
+            node.prev = head;
+            node.next = head.next;
+            head.next.prev = node;
+            head.next = node;
+        }
+
+        // 4. 删除节点
+        public void removeNode(Node<K, V> node) {
+
+            node.next.prev = node.prev;
+            node.prev.next = node.next;
+            node.prev = null;
+            node.next = null;
+        }
+
+        // 5. 获得最后一个节点
+        public Node<K, V> getLast() {
+
+            if (tail.prev == head) {
+                return null;
+            }
+            return tail.prev;
+        }
+    }
+
+    private int cacheSize;
+    Map<Integer, Node<Integer, Integer>> map;
+    DoubleLinkedList<Integer, Integer> doubleLinkedList;
+
+    public LRUCacheDemo2(int cacheSize) {
+        this.cacheSize = cacheSize; //缓存大小
+        map = new HashMap<>();  //根据HashMap进行查找
+        doubleLinkedList = new DoubleLinkedList<>();
+    }
+
+    public int get(int key) {
+        if (!map.containsKey(key)) {
+            return -1;
+        }
+
+        Node<Integer, Integer> node = map.get(key);
+        doubleLinkedList.removeNode(node);
+        doubleLinkedList.addHead(node);
+
+        return node.value;
+    }
+
+    public void put(int key, int value) {
+        if (map.containsKey(key)) { //判断当前key是否存在,存在则更新
+            Node<Integer, Integer> node = map.get(key);
+            node.value = value;
+            map.put(key, node);
+            doubleLinkedList.removeNode(node);
+            doubleLinkedList.addHead(node);
+        } else {
+
+            if (map.size() == cacheSize) {  //判断当前map是否已经满了
+                Node<Integer, Integer> last = doubleLinkedList.getLast();
+                map.remove(last.key);
+                doubleLinkedList.removeNode(last);
+
+            }
+
+            //新增Node节点
+            Node<Integer, Integer> node = new Node<>(key, value);
+            map.put(key, node);
+            doubleLinkedList.addHead(node);
+        }
+    }
+
+    public static void main(String[] args) {
+        LRUCacheDemo2 lruCacheDemo2 = new LRUCacheDemo2(3);
+        lruCacheDemo2.put(1, 1);
+        lruCacheDemo2.put(2, 2);
+        lruCacheDemo2.put(3, 3);
+        System.out.println(lruCacheDemo2.map.keySet());
+
+        lruCacheDemo2.put(4, 4);
+        System.out.println(lruCacheDemo2.map.keySet());
+
+        lruCacheDemo2.put(3, 3);
+        System.out.println(lruCacheDemo2.map.keySet());
+        lruCacheDemo2.put(3, 3);
+        System.out.println(lruCacheDemo2.map.keySet());
+        lruCacheDemo2.put(3, 3);
+        System.out.println(lruCacheDemo2.map.keySet());
+
+        lruCacheDemo2.put(5, 5);
+        System.out.println(lruCacheDemo2.map.keySet());
+
+        lruCacheDemo2.put(6, 6);
+        System.out.println(lruCacheDemo2.map.keySet());
+    }
+}
+```
+

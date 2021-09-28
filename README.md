@@ -10,6 +10,8 @@
 
 ## JUC
 
+AQS原理
+
 ### volatile
 
 [讲讲java jmm volatile的实现原理](https://github.com/DragonChilde/eight-part-essay/blob/main/Java/juc/volatile/%E8%AE%B2%E8%AE%B2java%20jmm%20volatile%E7%9A%84%E5%AE%9E%E7%8E%B0%E5%8E%9F%E7%90%86.md)
@@ -17,6 +19,8 @@
 ### 线程池
 
 [**说说线程池的工作原理**](https://github.com/DragonChilde/eight-part-essay/blob/main/Java/juc/%E7%BA%BF%E7%A8%8B%E6%B1%A0/%E8%AF%B4%E8%AF%B4%E7%BA%BF%E7%A8%8B%E6%B1%A0%E7%9A%84%E5%B7%A5%E4%BD%9C%E5%8E%9F%E7%90%86.md)
+
+
 
 ------
 
@@ -76,8 +80,13 @@
 
 [对不起，网上的那些 Redis 分布式锁的用法都是错的！](https://www.xttblog.com/?p=4598)
 
+[Redis缓存淘汰策略](https://github.com/DragonChilde/eight-part-essay/blob/main/Redis/Redis%E7%BC%93%E5%AD%98%E6%B7%98%E6%B1%B0%E7%AD%96%E7%95%A5.md)
+
 ------
 
 数据结构和算法
 
 [十大经典排序(Java)](https://github.com/DragonChilde/eight-part-essay/blob/main/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95/%E5%8D%81%E5%A4%A7%E7%BB%8F%E5%85%B8%E6%8E%92%E5%BA%8F(Java).md)
+
+[LRU算法](https://github.com/DragonChilde/eight-part-essay/blob/main/Redis/Redis%E7%BC%93%E5%AD%98%E6%B7%98%E6%B1%B0%E7%AD%96%E7%95%A5.md)
+
