@@ -516,7 +516,7 @@ public class AQSDemo {
   也许看到这里的代码有点蒙，需要有些前置知识，在双端同步队列中，第一个节点为虚节点（也叫哨兵节点），其实并不存储任何信息，只是占位。 真正的第一个有数据的节点，是从第二个节点开始的。
 
   ```java
-      private Node enq(final Node node) {
+       private Node enq(final Node node) {
           for (;;) {
               Node t = tail;
               if (t == null) { // Must initialize
@@ -739,3 +739,179 @@ public class AQSDemo {
 
 ------
 
+### 总算要 unlock() 
+
+> **线程 A 执行 `unlock()` 方法**
+
+A 线程终于要 `unlock()` 
+
+![](http://120.77.237.175:9080/photos/eight/java/juc/aqs/28.jpg)
+
+`unlock()` 方法调用了 `sync.release(1)` 方法
+
+```java
+    public void unlock() {
+        sync.release(1);
+    }
+```
+
+------
+
+`release()` 方法的执行流程
+
+其实主要就是看看 `tryRelease(arg) `方法和 `unparkSuccessor(h)` 方法的执行流程，这里先大概说以下，能有个印象：线程 A 即将让出 `lock` 锁，因此 `tryRelease()`执行后将返回 `true`，表示礼让成功，`head `指针指向哨兵节点，并且 if 条件满足，可执行 `unparkSuccessor(h)` 方法
+
+```java
+    public final boolean release(int arg) {
+        if (tryRelease(arg)) {
+            Node h = head;
+            if (h != null && h.waitStatus != 0)
+                unparkSuccessor(h);
+            return true;
+        }
+        return false;
+    }
+```
+
+------
+
+**`tryRelease(arg)` 方法的执行逻辑**
+
+又是 `AbstractQueuedSynchronizer` 类中定义的方法，又是抛了个异常
+
+```java
+    protected boolean tryRelease(int arg) {
+        throw new UnsupportedOperationException();
+    }
+```
+
+查看其具体实现
+
+![](http://120.77.237.175:9080/photos/eight/java/juc/aqs/29.jpg)
+
+线程 A 只加锁过一次，因此 `state` 的值为 1，参数 `release` 的值也为 1，因此 `c == 0`。将 `free` 设置为 `true`，表示当前 `lock` 锁已被释放，将排他锁占有的线程设置为 `null`，表示没有任何线程占用 `lock` 锁
+
+```java
+        protected final boolean tryRelease(int releases) {
+            int c = getState() - releases;
+            if (Thread.currentThread() != getExclusiveOwnerThread())
+                throw new IllegalMonitorStateException();
+            boolean free = false;
+            if (c == 0) {
+                free = true;
+                setExclusiveOwnerThread(null);
+            }
+            setState(c);
+            return free;
+        }
+```
+
+------
+
+`unparkSuccessor(h)` 方法的执行逻辑
+
+在 `release()` 方法中获取到的头结点 h 为哨兵节点，`h.waitStatus == -1`，因此执行 CAS操作将哨兵节点的 `waitStatus` 设置为 0，并将哨兵节点的下一个节点`（s = node.next = nodeB）`获取出来，并唤醒 `nodeB` 中封装的线程`（if (s == null || s.waitStatus > 0) `不成立，只有 `if (s != null) `成立）
+
+```java
+    private void unparkSuccessor(Node node) {
+        /*
+         * If status is negative (i.e., possibly needing signal) try
+         * to clear in anticipation of signalling.  It is OK if this
+         * fails or if status is changed by waiting thread.
+         */
+        int ws = node.waitStatus;
+        if (ws < 0)
+            compareAndSetWaitStatus(node, ws, 0);
+
+        /*
+         * Thread to unpark is held in successor, which is normally
+         * just the next node.  But if cancelled or apparently null,
+         * traverse backwards from tail to find the actual
+         * non-cancelled successor.
+         */
+        Node s = node.next;
+        if (s == null || s.waitStatus > 0) {
+            s = null;
+            for (Node t = tail; t != null && t != node; t = t.prev)
+                if (t.waitStatus <= 0)
+                    s = t;
+        }
+        if (s != null)
+            LockSupport.unpark(s.thread);
+    }
+```
+
+------
+
+执行完上述操作后，当前占用 `lock` 锁的线程为 `null`，哨兵节点的 `waitStatus` 设置为 0，`state` 的值为 0（表示当前没有任何线程占用 `lock` 锁）
+
+![](http://120.77.237.175:9080/photos/eight/java/juc/aqs/30.jpg)
+
+> **杀个回马枪：继续来看 B 线程被唤醒之后的执行逻辑**
+
+再次回到 `lock()` 方法的执行流程中来，线程 B 被 `unpark()` 之后将不再阻塞，继续执行下面的程序，线程 B 正常被唤醒，因此 `Thread.interrupted()` 的值为 `false`，表示线程 B 未被中断
+
+```java
+    private final boolean parkAndCheckInterrupt() {
+        LockSupport.park(this);
+        return Thread.interrupted();
+    }
+```
+
+回到上一层方法中，此时 `lock` 锁未被占用，线程 B 执行 `tryAcquire(arg)` 方法能够抢到 `lock` 锁，并且将 `state` 变量的值设置为 1，表示该 `lock` 锁已经被占用
+
+![](http://120.77.237.175:9080/photos/eight/java/juc/aqs/31.jpg)
+
+接着来研究下 `setHead(node)` 方法：传入的节点为 `nodeB`，头指针指向 `nodeB` 节点；将 `nodeB` 中封装的线程置为 `null`（因为已经获得锁了）；`nodeB` 不再指向其前驱节点（哨兵节点）。这一切都是为了将 `nodeB` 作为新的哨兵节点
+
+```java
+    private void setHead(Node node) {
+        head = node;
+        node.thread = null;
+        node.prev = null;
+    }
+```
+
+执行完 `setHead(node)` 方法的状态如下图所示
+
+![](http://120.77.237.175:9080/photos/eight/java/juc/aqs/32.jpg)
+
+将 `p.next` 设置为 `null`，这是原来的哨兵节点就是完全孤立的一个节点，此时 `nodeB` 作为新的哨兵节点
+
+![](http://120.77.237.175:9080/photos/eight/java/juc/aqs/33.png)
+
+线程 C 也是类似的执行流程
+
+> 注意,上图有一个误区,就是节点NodeB的waitStatus,应该为-1,当把指针指到NodeB为头节点时,才会对其waitStatus改为0,下面这段代码已经说明一切,
+
+```java
+    public final boolean release(int arg) {	//释放锁
+        if (tryRelease(arg)) {	//尝试释放锁,利用ReentrantLock.Sync重写此方法进行释放
+            Node h = head;	//把头节点赋值给当前节点
+            if (h != null && h.waitStatus != 0)	//头节点不为NULL,并且其waitStatus不为0
+                unparkSuccessor(h);	//更改头节点状态,关释放当前阻塞的当前线程
+            return true;
+        }
+        return false;
+    }
+```
+
+------
+
+## AQS 总结
+
+**第一个考点**：我相信你应该看过源码了，那么AQS里面有个变量叫State，它的值有几种？
+
+**答**：3个状态：没占用是0，占用了是1，大于1是可重入锁
+
+------
+
+**第二个考点**：如果锁正在被占用，AB两个线程进来了以后，请问这个总共有多少个Node节点？
+
+**答**：答案是3个，分别是哨兵节点、nodeA、nodeB
+
+------
+
+> **AQS 源码解读案例图示**
+
+![](http://120.77.237.175:9080/photos/eight/java/juc/aqs/34.png)
