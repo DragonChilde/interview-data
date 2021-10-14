@@ -24,9 +24,13 @@
 
 ------
 
+# Spring
 
+[Spring Aop顺序](https://github.com/DragonChilde/eight-part-essay/blob/main/Spring/Spring%20Aop%E9%A1%BA%E5%BA%8F.md)
 
+[Spring循环依赖](https://github.com/DragonChilde/eight-part-essay/blob/main/Spring/Spring%20%E5%BE%AA%E7%8E%AF%E4%BE%9D%E8%B5%96.md)
 
+------
 
 # Go
 
