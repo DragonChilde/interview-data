@@ -30,8 +30,6 @@
 
 [**说说线程池的工作原理**](https://github.com/DragonChilde/eight-part-essay/blob/main/Java/juc/%E7%BA%BF%E7%A8%8B%E6%B1%A0/%E8%AF%B4%E8%AF%B4%E7%BA%BF%E7%A8%8B%E6%B1%A0%E7%9A%84%E5%B7%A5%E4%BD%9C%E5%8E%9F%E7%90%86.md)
 
-
-
 ------
 
 # Spring
@@ -39,6 +37,12 @@
 [Spring Aop顺序](https://github.com/DragonChilde/eight-part-essay/blob/main/Spring/Spring%20Aop%E9%A1%BA%E5%BA%8F.md)
 
 [Spring循环依赖](https://github.com/DragonChilde/eight-part-essay/blob/main/Spring/Spring%20%E5%BE%AA%E7%8E%AF%E4%BE%9D%E8%B5%96.md)
+
+------
+
+# Mybatis
+
+Mybatis中当实体类中的属性名和表中的字段不一样，怎么办?
 
 ------
 
