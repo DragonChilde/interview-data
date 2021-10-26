@@ -42,7 +42,7 @@
 
 # Mybatis
 
-Mybatis中当实体类中的属性名和表中的字段不一样，怎么办?
+[Mybatis中当实体类中的属性名和表中的字段不一样，怎么办?](https://github.com/DragonChilde/eight-part-essay/blob/main/Mybatis/Mybatis%E9%9D%A2%E8%AF%95%E9%A2%98%E7%9B%AE.md)
 
 ------
 
