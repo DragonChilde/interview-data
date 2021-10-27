@@ -120,4 +120,5 @@
 
 ## Git
 
-git分支相关命令、实际引用
+[git分支相关命令、实际引用](https://github.com/DragonChilde/eight-part-essay/blob/main/Other/Git.md)
+
