@@ -108,3 +108,8 @@
 
 [LRU算法](https://github.com/DragonChilde/eight-part-essay/blob/main/Redis/Redis%E7%BC%93%E5%AD%98%E6%B7%98%E6%B1%B0%E7%AD%96%E7%95%A5.md)
 
+------
+
+# Linux
+
+常用基本命令 - 进程类
