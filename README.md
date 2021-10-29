@@ -30,6 +30,12 @@
 
 [**说说线程池的工作原理**](https://github.com/DragonChilde/eight-part-essay/blob/main/Java/juc/%E7%BA%BF%E7%A8%8B%E6%B1%A0/%E8%AF%B4%E8%AF%B4%E7%BA%BF%E7%A8%8B%E6%B1%A0%E7%9A%84%E5%B7%A5%E4%BD%9C%E5%8E%9F%E7%90%86.md)
 
+## JVM
+
+JVM垃圾回收机制、GC发生在JVM哪部分，有几种GC，他们的算法是什么
+
+GC 发生在JVM的堆里面
+
 ------
 
 # Spring
@@ -110,6 +116,12 @@
 
 ------
 
+# Elasticsearch 
+
+Elasticsearch 与 solr 的区别
+
+------
+
 # Linux
 
 常用基本命令 - [进程类](https://github.com/DragonChilde/eight-part-essay/blob/main/Linux/Linux%20%E5%B8%B8%E7%94%A8%E6%9C%8D%E5%8A%A1%E7%B1%BB%E7%9B%B8%E5%85%B3%E5%91%BD%E4%BB%A4.md)
@@ -122,3 +134,16 @@
 
 [git分支相关命令、实际引用](https://github.com/DragonChilde/eight-part-essay/blob/main/Other/Git.md)
 
+
+
+# 项目
+
+------
+
+# 项目面试题
+
+单点登录
+
+购物车实现过程
+
+消息队列在项目中的使用
