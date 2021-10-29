@@ -54,8 +54,6 @@
 
 ------
 
-
-
 # Mysql
 
 [你们数据库的高可用是怎么实现的?](https://github.com/DragonChilde/eight-part-essay/blob/main/Mysql/%E4%BD%A0%E4%BB%AC%E6%95%B0%E6%8D%AE%E5%BA%93%E7%9A%84%E9%AB%98%E5%8F%AF%E7%94%A8%E6%98%AF%E6%80%8E%E4%B9%88%E5%AE%9E%E7%8E%B0%E7%9A%84.md)
@@ -128,13 +126,9 @@
 
 # Other
 
-## Git
-
 [git分支相关命令、实际引用](https://github.com/DragonChilde/eight-part-essay/blob/main/Other/Git.md)
 
-
-
-# 项目
+一些大厂的面试题
 
 ------
 
