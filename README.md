@@ -22,11 +22,13 @@
 
 [AQS原理](https://github.com/DragonChilde/eight-part-essay/blob/main/Java/juc/AQS.md)
 
+[CAS你知道吗](https://github.com/DragonChilde/eight-part-essay/blob/main/Java/juc/CAS/CAS%E4%BD%A0%E7%9F%A5%E9%81%93%E5%90%97.md)
+
 ### volatile
 
 [讲讲java jmm volatile的实现原理](https://github.com/DragonChilde/eight-part-essay/blob/main/Java/juc/volatile/%E8%AE%B2%E8%AE%B2java%20jmm%20volatile%E7%9A%84%E5%AE%9E%E7%8E%B0%E5%8E%9F%E7%90%86.md)
 
-谈谈你对volatile的理解
+[谈谈你对volatile的理解](https://github.com/DragonChilde/eight-part-essay/blob/main/Java/juc/volatile/%E8%B0%88%E8%B0%88%E4%BD%A0%E5%AF%B9volatile%E7%9A%84%E7%90%86%E8%A7%A3.md)
 
 ------
 
