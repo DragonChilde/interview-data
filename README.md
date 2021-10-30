@@ -26,9 +26,15 @@
 
 [讲讲java jmm volatile的实现原理](https://github.com/DragonChilde/eight-part-essay/blob/main/Java/juc/volatile/%E8%AE%B2%E8%AE%B2java%20jmm%20volatile%E7%9A%84%E5%AE%9E%E7%8E%B0%E5%8E%9F%E7%90%86.md)
 
+谈谈你对volatile的理解
+
+------
+
 ### 线程池
 
 [**说说线程池的工作原理**](https://github.com/DragonChilde/eight-part-essay/blob/main/Java/juc/%E7%BA%BF%E7%A8%8B%E6%B1%A0/%E8%AF%B4%E8%AF%B4%E7%BA%BF%E7%A8%8B%E6%B1%A0%E7%9A%84%E5%B7%A5%E4%BD%9C%E5%8E%9F%E7%90%86.md)
+
+------
 
 ## JVM
 
