@@ -126,6 +126,14 @@
 
 ------
 
+# 设计模式
+
+------
+
+单例模式
+
+------
+
 # Linux
 
 常用基本命令 - [进程类](https://github.com/DragonChilde/eight-part-essay/blob/main/Linux/Linux%20%E5%B8%B8%E7%94%A8%E6%9C%8D%E5%8A%A1%E7%B1%BB%E7%9B%B8%E5%85%B3%E5%91%BD%E4%BB%A4.md)
