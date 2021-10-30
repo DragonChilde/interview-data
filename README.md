@@ -144,7 +144,7 @@
 
 [git分支相关命令、实际引用](https://github.com/DragonChilde/eight-part-essay/blob/main/Other/Git.md)
 
-一些大厂的面试题
+[一些大厂的面试题](https://github.com/DragonChilde/eight-part-essay/blob/main/Other/%E4%B8%80%E4%BA%9B%E5%A4%A7%E5%8E%82%E7%9A%84%E9%9D%A2%E8%AF%95%E9%A2%98.md)
 
 ------
 
