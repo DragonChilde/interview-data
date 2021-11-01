@@ -24,9 +24,9 @@
 
 [CAS你知道吗](https://github.com/DragonChilde/eight-part-essay/blob/main/Java/juc/CAS/CAS%E4%BD%A0%E7%9F%A5%E9%81%93%E5%90%97.md)
 
-原子类Atomiclnteger的ABA问题谈谈？原子更新引用知道吗？
+[原子类Atomiclnteger的ABA问题谈谈？原子更新引用知道吗？](https://github.com/DragonChilde/eight-part-essay/blob/main/Java/juc/CAS/%E5%8E%9F%E5%AD%90%E7%B1%BBAtomicInteger%E7%9A%84ABA%E9%97%AE%E9%A2%98.md)
 
-ArrayList是线程不安全，请编写一个不安全的案例并给出解决方案
+[ArrayList是线程不安全，请编写一个不安全的案例并给出解决方案](https://github.com/DragonChilde/eight-part-essay/blob/main/Java/juc/Collection%E7%BA%BF%E7%A8%8B%E4%B8%8D%E5%AE%89%E5%85%A8%E7%9A%84%E4%B8%BE%E4%BE%8B.md)
 
 ### volatile
 
