@@ -18,6 +18,8 @@
 
 [成员变量和局部变量](https://github.com/DragonChilde/eight-part-essay/blob/main/Java/base/%E7%B1%BB%E5%88%9D%E5%A7%8B%E5%8C%96%E5%AE%9E%E4%BE%8B%E5%88%9D%E5%A7%8B%E5%8C%96.md)
 
+[值传递和引用传递](https://github.com/DragonChilde/eight-part-essay/blob/main/Java/base/%E7%B1%BB%E5%88%9D%E5%A7%8B%E5%8C%96%E5%AE%9E%E4%BE%8B%E5%88%9D%E5%A7%8B%E5%8C%96.md)
+
 ## JUC
 
 [AQS原理](https://github.com/DragonChilde/eight-part-essay/blob/main/Java/juc/AQS.md)
