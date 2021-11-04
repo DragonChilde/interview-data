@@ -32,7 +32,7 @@
 
 [Java锁](https://github.com/DragonChilde/eight-part-essay/blob/main/Java/juc/Java%E9%94%81.md)
 
-CountDownLatch-CyclicBarrier-Semaphore
+[CountDownLatch-CyclicBarrier-Semaphore](https://github.com/DragonChilde/eight-part-essay/blob/main/Java/juc/CountDownLatch-CyclicBarrier-Semaphore.md)
 
 阻塞队列知道吗
 
