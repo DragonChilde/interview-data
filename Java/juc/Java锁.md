@@ -800,3 +800,7 @@ as-if-serial语义把**单线程**程序保护了起来，遵守as-if-serial语�
 > 介绍synchronized的原理，这是本题的第二个关键点，到这里基本就可以拿满分了。
 
 synchronized通过排他锁的方式就保证了同一时间内，被synchronized修饰的代码是单线程执行的。所以呢，这就满足了as-if-serial语义的一个关键前提，那就是**单线程**，因为有as-if-serial语义保证，单线程的有序性就天然存在了。
+
+## 来源
+
+https://mp.weixin.qq.com/s/Pd6dOXaMQFUHfAUnOhnwtw

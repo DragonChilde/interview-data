@@ -32,6 +32,10 @@
 
 [Java锁](https://github.com/DragonChilde/eight-part-essay/blob/main/Java/juc/Java%E9%94%81.md)
 
+CountDownLatch-CyclicBarrier-Semaphore
+
+阻塞队列知道吗
+
 ### volatile
 
 [讲讲java jmm volatile的实现原理](https://github.com/DragonChilde/eight-part-essay/blob/main/Java/juc/volatile/%E8%AE%B2%E8%AE%B2java%20jmm%20volatile%E7%9A%84%E5%AE%9E%E7%8E%B0%E5%8E%9F%E7%90%86.md)
