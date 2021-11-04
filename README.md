@@ -34,7 +34,11 @@
 
 [CountDownLatch-CyclicBarrier-Semaphore](https://github.com/DragonChilde/eight-part-essay/blob/main/Java/juc/CountDownLatch-CyclicBarrier-Semaphore.md)
 
-阻塞队列知道吗
+[阻塞队列知道吗](https://github.com/DragonChilde/eight-part-essay/blob/main/Java/juc/%E9%98%BB%E5%A1%9E%E9%98%9F%E5%88%97.md)
+
+Synchronized和Lock有什么区别
+
+------
 
 ### volatile
 
