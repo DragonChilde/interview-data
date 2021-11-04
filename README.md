@@ -36,7 +36,7 @@
 
 [阻塞队列知道吗](https://github.com/DragonChilde/eight-part-essay/blob/main/Java/juc/%E9%98%BB%E5%A1%9E%E9%98%9F%E5%88%97.md)
 
-Synchronized和Lock有什么区别
+[Synchronized和Lock有什么区别](https://github.com/DragonChilde/eight-part-essay/blob/main/Java/juc/Synchronized%E5%92%8CLock%E7%9A%84%E5%8C%BA%E5%88%AB.md)
 
 ------
 
