@@ -8,7 +8,7 @@ new ArrayList<Integer>();
 
 底层创建了一个空的数组，伴随着初始值为10
 
-当执行add方法后，如果超过了10，那么会进行扩容，扩容的大小为原值的一半，也就是5个，使用下列方法扩容
+当执行`add`方法后，如果超过了10，那么会进行扩容，扩容的大小为原值的一半，也就是5个，使用下列方法扩容
 
 ```java
 Arrays.copyOf(elementData, netCapacity)
@@ -36,7 +36,7 @@ public class ArrayListNotSafeDemo {
 
 ## 多线程环境
 
-为什么`ArrayList`是线程不安全的？因为在进行写操作的时候，方法上为了保证并发性，是没有添加synchronized修饰，所以并发写的时候，就会出现问题
+为什么`ArrayList`是线程不安全的？因为在进行写操作的时候，方法上为了保证并发性，是没有添加`synchronized`修饰，所以并发写的时候，就会出现问题
 
 ```java
     public boolean add(E e) {
@@ -78,7 +78,7 @@ Exception in thread "13" java.util.ConcurrentModificationException
 	at java.lang.Thread.run(Thread.java:748)
 ```
 
-这个异常是 并发修改的异常
+这个异常是并发修改的异常
 
 可看出`toString()`，`Itr.next()`，`Itr.checkForComodification()`后抛出异常，那么看看它们`next()`，`checkForComodification()`源码：
 
@@ -150,6 +150,8 @@ modCount具体详细说明如下：
 >
 > This field is used by the iterator and list iterator implementation returned by the iterator and listIterator methods. If the value of this field changes unexpectedly, the iterator (or list iterator) will throw a ConcurrentModificationException in response to the next, remove, previous, set or add operations. This provides fail-fast behavior, rather than non-deterministic behavior in the face of concurrent modification during iteration.
 >
+> 此列表已在结构上修改的次数。结构修改是改变列表大小的人，或以其他方式扰乱这种时尚迭代可以产生不正确的结果。该字段由迭代器和列表迭代器和ListIterator方法返回的迭代器实现使用。如果此字段的值意外地发生变化，迭代器（或列表迭代器）将响应下一个，删除，上一个，设置或添加操作抛出同时映射扫描消息。这提供了失败的行为，而不是在迭代期间并发修改面前的非确定性行为。此列表已在结构上修改的次数。结构修改是改变列表大小的人，或以其他方式扰乱这种时尚迭代可以产生不正确的结果。该字段由迭代器和列表迭代器和ListIterator方法返回的迭代器实现使用。如果此字段的值意外地发生变化，迭代器（或列表迭代器）将响应下一个，删除，上一个，设置或添加操作抛出同时映射扫描消息。这提供了失败的行为，而不是在迭代期间并发修改的非确定性行为。
+>
 > [Link](https://docs.oracle.com/javase/8/docs/api/java/util/AbstractList.html#modCount)
 
 综上所述，假设线程A将通过迭代器next()获取下一元素时，从而将其打印出来。但之前，其他某线程添加新元素至list，结构发生了改变，`modCount`自增。当线程A运行到`checkForComodification()`，`expectedModCount`是`modCount`之前自增的值，判定`modCount != expectedModCount`为真，继而抛出`ConcurrentModificationException`。
@@ -157,9 +159,9 @@ modCount具体详细说明如下：
 
 ### 方案一：`Vector`
 
-第一种方法，就是不用`ArrayList`这种不安全的List实现类，而采用Vector，线程安全的
+第一种方法，就是不用`ArrayList`这种不安全的List实现类，而采用`Vector`，线程安全的
 
-关于Vector如何实现线程安全的，而是在方法上加了锁，即`synchronized`
+关于`Vector`如何实现线程安全的，而是在方法上加了锁，即`synchronized`
 
 ```java
     public synchronized void addElement(E obj) {
@@ -177,7 +179,7 @@ modCount具体详细说明如下：
 List<String> list = Collections.synchronizedList(new ArrayList<>());
 ```
 
-采用Collections集合工具类，在`ArrayList`外面包装一层 同步 机制
+采用`Collections`集合工具类，在`ArrayList`外面包装一层 同步 机制
 
 ###  方案三：采用JUC里面的方法(推荐)
 
@@ -376,17 +378,17 @@ Exception in thread "28" java.util.ConcurrentModificationException
     }
 ```
 
-但是为什么我调用 `HashSet.add()`的方法，只需要传递一个元素，而`HashMap`是需要传递`key-value`键值对？
+但是为什么调用 `HashSet.add()`的方法，只需要传递一个元素，而`HashMap`是需要传递`key-value`键值对？
 
 首先我们查看`hashSet`的`add`方法
 
-```
+```java
     public boolean add(E e) {
         return map.put(e, PRESENT)==null;
     }
 ```
 
-我们能发现但我们调用`add`的时候，存储一个值进入`map`中，只是作为`key`进行存储，而value存储的是一个`Object`类型的常量，也就是说`HashSet`只关心key，而不关心`value`
+我们能发现调用`add`的时候，存储一个值进入`map`中，只是作为`key`进行存储，而`value`存储的是一个`Object`类型的常量，也就是说`HashSet`只关心`key`，而不关心`value`
 
 ### 解决方法
 

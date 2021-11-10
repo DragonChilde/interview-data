@@ -16,25 +16,25 @@
 
 ### synchronized 和 lock 有什么区别？用新的lock有什么好处？举例说明
 
-- synchronized 和 lock 有什么区别？用新的lock有什么好处？举例说明
+- `synchronized` 和 `lock `有什么区别？用新的`lock`有什么好处？举例说明
 
-1. synchronized属于JVM层面，属于java的关键字
-   - monitorenter（底层是通过monitor对象来完成，其实wait/notify等方法也依赖于monitor对象 只能在同步块或者方法中才能调用 wait/ notify等方法）
-   - Lock是具体类（java.util.concurrent.locks.Lock）是api层面的锁
+1. `synchronized`属于`JVM`层面，属于`java`的关键字
+   - `monitorenter`（底层是通过`monitor`对象来完成，其实`wait/notify`等方法也依赖于`monitor`对象 只能在同步块或者方法中才能调用`wait/ notify`等方法）
+   - `Lock`是具体类（`java.util.concurrent.locks.Lock`）是`api`层面的锁
 2. 使用方法：
-   - synchronized：不需要用户去手动释放锁，当synchronized代码执行后，系统会自动让线程释放对锁的占用
-   - ReentrantLock：则需要用户去手动释放锁，若没有主动释放锁，就有可能出现死锁的现象，需要lock() 和 unlock() 配置try catch语句来完成
+   - `synchronized`：不需要用户去手动释放锁，当`synchronized`代码执行后，系统会自动让线程释放对锁的占用
+   - `ReentrantLock`：则需要用户去手动释放锁，若没有主动释放锁，就有可能出现死锁的现象，需要`lock()` 和 `unlock()` 配置`try catch`语句来完成
 3. 等待是否中断
-   - synchronized：不可中断，除非抛出异常或者正常运行完成
-   - ReentrantLock：可中断，可以设置超时方法
-     - 设置超时方法，trylock(long timeout, TimeUnit unit)
-     - lockInterrupible() 放代码块中，调用interrupt() 方法可以中断
+   - `synchronized`：不可中断，除非抛出异常或者正常运行完成
+   - `ReentrantLock`：可中断，可以设置超时方法
+     - 设置超时方法，`trylock(long timeout, TimeUnit unit)`
+     - `lockInterrupible()` 放代码块中，调用`interrupt() `方法可以中断
 4. 加锁是否公平
-   - synchronized：非公平锁
-   - ReentrantLock：默认非公平锁，构造函数可以传递boolean值，true为公平锁，false为非公平锁
-5. 锁绑定多个条件Condition
-   - synchronized：没有，要么随机，要么全部唤醒
-   - ReentrantLock：用来实现分组唤醒需要唤醒的线程，可以精确唤醒，而不是像synchronized那样，要么随机，要么全部唤醒
+   - `synchronized`：非公平锁
+   - `ReentrantLock`：默认非公平锁，构造函数可以传递`boolean`值，`true`为公平锁，`false`为非公平锁
+5. 锁绑定多个条件`Condition`
+   - `synchronized`：没有，要么随机，要么全部唤醒
+   - `ReentrantLock`：用来实现分组唤醒需要唤醒的线程，可以精确唤醒，而不是像`synchronized`那样，要么随机，要么全部唤醒
 
 ## 举例
 
@@ -49,7 +49,7 @@ AA打印5次，BB打印10次，CC打印15次
 来10轮
 ```
 
-我们会发现，这样的场景在使用synchronized来完成的话，会非常的困难，但是使用lock就非常方便了
+我们会发现，这样的场景在使用`synchronized`来完成的话，会非常的困难，但是使用`lock`就非常方便了
 
 也就是我们需要实现一个链式唤醒的操作
 
@@ -75,7 +75,7 @@ private Condition condition3 = lock.newCondition();
 
 然后开始记住锁的三部曲： 判断 干活 唤醒
 
-这里的判断，为了避免虚假唤醒，一定要采用 while
+这里的判断，为了避免虚假唤醒，一定要采用 `while`
 
 干活就是把需要的内容，打印出来
 
