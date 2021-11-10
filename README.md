@@ -52,7 +52,7 @@
 
 [**说说线程池的工作原理**](https://github.com/DragonChilde/eight-part-essay/blob/main/Java/juc/%E7%BA%BF%E7%A8%8B%E6%B1%A0/%E8%AF%B4%E8%AF%B4%E7%BA%BF%E7%A8%8B%E6%B1%A0%E7%9A%84%E5%B7%A5%E4%BD%9C%E5%8E%9F%E7%90%86.md)
 
-线程池用过吗？ThreadPoolExecutor谈谈你的理解？
+[线程池用过吗？ThreadPoolExecutor谈谈你的理解？](https://github.com/DragonChilde/eight-part-essay/blob/main/Java/juc/%E7%BA%BF%E7%A8%8B%E6%B1%A0/%E7%BA%BF%E7%A8%8B%E6%B1%A0.md)
 
 ------
 
