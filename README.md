@@ -64,7 +64,7 @@
 
 [JVM垃圾回收机制、GC发生在JVM哪部分，有几种GC，他们的算法是什么](https://github.com/DragonChilde/eight-part-essay/blob/main/Java/jvm/JVM%E5%9E%83%E5%9C%BE%E5%9B%9E%E6%94%B6%E6%9C%BA%E5%88%B6%E3%80%81GC%E5%8F%91%E7%94%9F%E5%9C%A8JVM%E5%93%AA%E9%83%A8%E5%88%86%EF%BC%8C%E6%9C%89%E5%87%A0%E7%A7%8DGC%EF%BC%8C%E4%BB%96%E4%BB%AC%E7%9A%84%E7%AE%97%E6%B3%95%E6%98%AF%E4%BB%80%E4%B9%88.md)
 
-JVM垃圾回收的时候如何确定垃圾？是否知道什么是GC Roots
+[JVM垃圾回收的时候如何确定垃圾？是否知道什么是GC Roots](https://github.com/DragonChilde/eight-part-essay/blob/main/Java/jvm/JVM%E9%9D%A2%E8%AF%95%E6%B1%87%E6%80%BB.md)
 
 你说你做过JVM调优和参数配置，请问如何查看JVM系统默认值
 
