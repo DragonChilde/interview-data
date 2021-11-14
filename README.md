@@ -64,6 +64,22 @@
 
 [JVM垃圾回收机制、GC发生在JVM哪部分，有几种GC，他们的算法是什么](https://github.com/DragonChilde/eight-part-essay/blob/main/Java/jvm/JVM%E5%9E%83%E5%9C%BE%E5%9B%9E%E6%94%B6%E6%9C%BA%E5%88%B6%E3%80%81GC%E5%8F%91%E7%94%9F%E5%9C%A8JVM%E5%93%AA%E9%83%A8%E5%88%86%EF%BC%8C%E6%9C%89%E5%87%A0%E7%A7%8DGC%EF%BC%8C%E4%BB%96%E4%BB%AC%E7%9A%84%E7%AE%97%E6%B3%95%E6%98%AF%E4%BB%80%E4%B9%88.md)
 
+JVM垃圾回收的时候如何确定垃圾？是否知道什么是GC Roots
+
+你说你做过JVM调优和参数配置，请问如何查看JVM系统默认值
+
+你平时工作用过的JVM常用基本配置参数有哪些？
+
+请谈谈你对OOM的认识？
+
+GC回收算法和垃圾收集器的关系？分别是什么请你谈谈
+
+怎么查看服务器默认的垃圾收集器是哪个？生产上你是如何配置垃圾收集器的？谈谈你的理解？
+
+G1垃圾收集器
+
+强引用、软引用、弱引用、虚引用分别是什么？
+
 ------
 
 # Spring
@@ -98,7 +114,61 @@
 
 [五种数据类型的使用场景](https://github.com/DragonChilde/eight-part-essay/blob/main/Redis/%E4%BA%94%E7%A7%8D%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B%E7%9A%84%E4%BD%BF%E7%94%A8%E5%9C%BA%E6%99%AF.md)
 
+[对不起，网上的那些 Redis 分布式锁的用法都是错的！](https://www.xttblog.com/?p=4598)
+
 [缓存淘汰策略](https://github.com/DragonChilde/eight-part-essay/blob/main/Redis/Redis%E7%BC%93%E5%AD%98%E6%B7%98%E6%B1%B0%E7%AD%96%E7%95%A5.md)
+
+在你的项目中，哪些数据是数据库和redis缓存双写一份的？如何保持双写一致性？
+
+系统上线，redis缓存系统如何部署
+
+系统上线，redis缓存给多大的总内存？命中率有多高？抗住了多少QPS？数据流回源会有多少QPS？
+
+热key大Value问题，某个key出现了热点缓存导致缓存集群中的某个机器负载过高？如何解决？
+
+超大Value打满网卡的问题如何规避这样的问题？
+
+你过往的工作经历中，是否出现过缓存集群事故？说说细节并说说高可用保障的方案
+
+平时如何监控缓存集群的QPS和容量
+
+缓存集群如何扩容？
+
+说下redis的集群原理和选举机制
+
+Key寻址算法都有哪些？
+
+Redis线程模型现场画个图说说
+
+Redis内存模型现场画个图说说
+
+Redis的底层数据结构小结多少？
+
+你们怎么解决缓存击穿问题？
+
+------
+
+# 消息中间件MQ
+
+消息队列的主要作用是什么？
+
+你项目好好的情况下，为什么引入消息队列？理由是什么？
+
+项目里你们是怎么用消息队列的？
+
+你在项目中是如何保证消息队列的高可用？
+
+kafka、activemq、rabbitmq、rocketmq都有什么区别？
+
+MQ在高并发情况下假设队列满了如何防止消息丢失？
+
+消费者消费消息，如何保证MQ幂等性
+
+谈谈你对死信队列的理解
+
+如果百万级别的消息积压了，你们如何处理？
+
+你们为什么不用其他的MQ，最终选择了RocketMQ？
 
 ------
 
@@ -121,16 +191,6 @@
 [https原理，工作流程](https://github.com/DragonChilde/eight-part-essay/blob/main/%E7%BD%91%E7%BB%9C%E5%9F%BA%E7%A1%80/https%E5%8E%9F%E7%90%86%EF%BC%8C%E5%B7%A5%E4%BD%9C%E6%B5%81%E7%A8%8B.md)
 
 [讲一讲7层网络模型，tcp的为什么要三次握手](https://github.com/DragonChilde/eight-part-essay/blob/main/%E7%BD%91%E7%BB%9C%E5%9F%BA%E7%A1%80/%E8%AE%B2%E4%B8%80%E8%AE%B27%E5%B1%82%E7%BD%91%E7%BB%9C%E6%A8%A1%E5%9E%8B%EF%BC%8Ctcp%E7%9A%84%E4%B8%BA%E4%BB%80%E4%B9%88%E8%A6%81%E4%B8%89%E6%AC%A1%E6%8F%A1%E6%89%8B.Md)
-
-------
-
-# Redis
-
-[五种数据类型的使用场景](https://github.com/DragonChilde/eight-part-essay/blob/main/Redis/%E4%BA%94%E7%A7%8D%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B%E7%9A%84%E4%BD%BF%E7%94%A8%E5%9C%BA%E6%99%AF.md)
-
-[对不起，网上的那些 Redis 分布式锁的用法都是错的！](https://www.xttblog.com/?p=4598)
-
-[Redis缓存淘汰策略](https://github.com/DragonChilde/eight-part-essay/blob/main/Redis/Redis%E7%BC%93%E5%AD%98%E6%B7%98%E6%B1%B0%E7%AD%96%E7%95%A5.md)
 
 ------
 
