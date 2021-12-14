@@ -194,9 +194,9 @@ MQ在高并发情况下假设队列满了如何防止消息丢失？
 
 ------
 
-数据结构和算法
+# 数据结构和算法
 
-LeetCode(简单)
+[LeetCode(简单)](https://github.com/DragonChilde/interview-data/blob/main/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95/Leetcode%E7%AE%97%E6%B3%95(%E7%AE%80%E5%8D%95).md)
 
 [十大经典排序(Java)](https://github.com/DragonChilde/eight-part-essay/blob/main/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95/%E5%8D%81%E5%A4%A7%E7%BB%8F%E5%85%B8%E6%8E%92%E5%BA%8F(Java).md)
 
