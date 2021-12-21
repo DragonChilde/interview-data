@@ -135,3 +135,44 @@
     }
 ```
 
+# 二分查找
+
+```java
+public class BinarySearch {
+
+    public int binarySearch(int[] nums, int target) {
+
+        int start = 0;
+        int end = nums.length - 1;
+
+        while (end > start) {
+
+            int mid = (end + start) / 2;
+            if (nums[mid] > target) {
+
+                end = nums[mid - 1];
+
+            } else if (nums[mid] < target) {
+                start = nums[mid + 1];
+            } else {
+                return mid;
+            }
+
+        }
+
+        return -1;
+    }
+
+
+    public static void main(String[] args) {
+
+        BinarySearch search = new BinarySearch();
+        int[] nums = {1, 2, 3, 4, 5, 6, 7, 8, 9, 0};
+
+        int index = search.binarySearch(nums, 7);
+        System.out.println(index);		//6
+
+    }
+}
+```
+
