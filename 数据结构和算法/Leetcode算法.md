@@ -302,7 +302,7 @@ public class NextPermutation {
     }
 
     public static void main(String[] args) {
-        int[] nums = {1,3,2};
+        int[] nums = {2,4,4,3,3,2,1};
 
         NextPermutation permutation = new NextPermutation();
 
@@ -492,7 +492,7 @@ public class RotateImage {
 ```
 
 ```java
-class Solution {
+class SearchMatrix {
     public boolean searchMatrix( int[][] matrix, int target ){
         // 先定义m和n
         int m = matrix.length;
@@ -559,7 +559,7 @@ class Solution {
 ```
 
 ```java
-class Solution {
+class FindDuplicatedNumber {
 	// 方法五：快慢指针
     public int findDuplicate(int[] nums){
         // 定义快慢指针
@@ -738,6 +738,350 @@ public class MultiplyStrings {
         MultiplyStrings multiplyStrings = new MultiplyStrings();
         System.out.println(multiplyStrings.multiply(num1, num2));
 
+    }
+}
+```
+
+## 去除重复字母(#316)
+
+给你一个字符串 s ，请你去除字符串中重复的字母，使得每个字母只出现一次。需保证 返回结果的字典序最小（要求不能打乱其他字符的相对位置）。
+
+注意：该题与 1081 https://leetcode-cn.com/problems/smallest-subsequence-of-distinct-characters 相同
+
+```
+示例 1：
+
+输入：s = "bcabc"
+输出："abc"
+
+示例 2：
+
+输入：s = "cbacdcbc"
+输出："acdb"
+```
+
+```java
+public class RemoveDuplicateLetters {
+
+    // 方法三：使用栈进行优化
+    public String removeDuplicateLetters(String s){
+        // 定义一个字符栈，保存去重之后的结果
+        Stack<Character> stack = new Stack<>();
+
+        // 为了快速判断一个字符是否在栈中出现过，用一个Set来保存元素是否出现
+        HashSet<Character> seenSet = new HashSet<>();
+
+        // 为了快速判断一个字符是否在某个位置之后重复出现，用一个HashMap来保存字母出现在字符串的最后位置
+        HashMap<Character, Integer> lastOccur = new HashMap<>();
+
+        // 遍历字符串，将最后一次出现的位置保存进map
+        for (int i = 0; i < s.length(); i++){
+            lastOccur.put(s.charAt(i), i);
+        }
+
+        // 遍历字符串，判断每个字符是否需要入栈
+        for (int i = 0; i < s.length(); i++){
+            char c = s.charAt(i);
+            // 只有在c没有出现过的情况下，才判断是否入栈
+            if (!seenSet.contains(c)){
+                // c入栈之前，要判断之前栈顶元素，是否在后面会重复出现；如果重复出现就可以删除
+                while ( !stack.isEmpty() && c < stack.peek() && lastOccur.get(stack.peek()) > i ){
+                    seenSet.remove(stack.pop());
+                }
+                stack.push(c);
+                seenSet.add(c);
+            }
+        }
+
+        // 将栈中的元素保存成字符串输出
+        StringBuilder stringBuilder = new StringBuilder();
+        for (Character c: stack)
+            stringBuilder.append(c.charValue());
+
+        return stringBuilder.toString();
+    }
+
+    public static void main(String[] args) {
+        String str1 = "bcabc";
+        String str2 = "cbacdcbc";
+        RemoveDuplicateLetters removeDuplicateLetters = new RemoveDuplicateLetters();
+
+        System.out.println(removeDuplicateLetters.removeDuplicateLetters(str1));
+        System.out.println(removeDuplicateLetters.removeDuplicateLetters(str2));
+    }
+}
+```
+
+# 滑动窗口
+
+## 滑动窗口最大值(#239)(困难)
+
+```
+给你一个整数数组 nums，有一个大小为 k 的滑动窗口从数组的最左侧移动到数组的最右侧。你只可以看到在滑动窗口内的 k 个数字。滑动窗口每次只向右移动一位。
+
+返回滑动窗口中的最大值。
+
+ 
+示例 1：
+
+输入：nums = [1,3,-1,-3,5,3,6,7], k = 3
+输出：[3,3,5,5,6,7]
+解释：
+滑动窗口的位置                最大值
+---------------               -----
+[1  3  -1] -3  5  3  6  7       3
+ 1 [3  -1  -3] 5  3  6  7       3
+ 1  3 [-1  -3  5] 3  6  7       5
+ 1  3  -1 [-3  5  3] 6  7       5
+ 1  3  -1  -3 [5  3  6] 7       6
+ 1  3  -1  -3  5 [3  6  7]      7
+示例 2：
+
+输入：nums = [1], k = 1
+输出：[1]
+示例 3：
+
+输入：nums = [1,-1], k = 1
+输出：[1,-1]
+示例 4：
+
+输入：nums = [9,11], k = 2
+输出：[11]
+示例 5：
+
+输入：nums = [4,-2], k = 2
+输出：[4]
+
+```
+
+```java
+public class SlidingWindowMaximum {
+
+    // 方法二：使用大顶堆
+    public int[] maxSlidingWindow(int[] nums, int k){
+        // 定义一个结果数组
+        int[] result = new int[nums.length - k + 1];
+
+        // 用优先队列实现一个大顶堆
+        PriorityQueue<Integer> maxHeap = new PriorityQueue<>(k, new Comparator<Integer>() {
+            @Override
+            public int compare(Integer o1, Integer o2) {
+                return o2 - o1;
+            }
+        });
+
+        // 准备工作：构建大顶堆，将第一个窗口元素（前k个）放入堆中
+        for (int i = 0; i < k; i++)
+            maxHeap.add(nums[i]);
+
+        // 当前大顶堆的堆顶元素就是第一个窗口的最大值
+        result[0] = maxHeap.peek();
+
+        // 遍历所有窗口
+        for (int i = 1; i <= nums.length - k; i++){
+            maxHeap.remove(nums[i-1]);    // 删除堆中上一个窗口的第一个元素
+            maxHeap.add(nums[i+k-1]);    // 添加当前窗口的最后一个元素进堆
+            result[i] = maxHeap.peek();
+        }
+
+        return result;
+    }
+
+
+    public static void main(String[] args) {
+        int[] input = {1,3,-1,-3,5,3,6,7};
+        int k = 3;
+
+        SlidingWindowMaximum slidingWindowMaximum = new SlidingWindowMaximum();
+
+        int[] output = slidingWindowMaximum.maxSlidingWindow(input, k);
+
+        for (int max: output)
+            System.out.print(max + "\t");
+    }
+}
+```
+
+## 最小覆盖子串(#76)(困难)
+
+给你一个字符串 `s` 、一个字符串 `t` 。返回 `s` 中涵盖 `t` 所有字符的最小子串。如果 `s` 中不存在涵盖 `t` 所有字符的子串，则返回空字符串 `"`
+
+```
+注意：
+
+对于 t 中重复字符，我们寻找的子字符串中该字符数量必须不少于 t 中该字符数量。
+如果 s 中存在这样的子串，我们保证它是唯一的答案。
+ 
+
+示例 1：
+
+输入：s = "ADOBECODEBANC", t = "ABC"
+输出："BANC"
+示例 2：
+
+输入：s = "a", t = "a"
+输出："a"
+示例 3:
+
+输入: s = "a", t = "aa"
+输出: ""
+
+解释: t 中两个字符 'a' 均应包含在 s 的子串中，
+因此没有符合条件的子字符串，返回空字符串。
+```
+
+```java
+public class MinWindowSubstring {
+    
+    // 方法四：进一步优化
+    public String minWindow(String s, String t) {
+        // 定义最小子串，保存结果，初始为空字符串
+        String minSubString = "";
+
+        // 定义一个HashMap，保存t中字符出现的频次
+        HashMap<Character, Integer> tCharFrequency = new HashMap<>();
+
+        // 统计t中字符频次
+        for (int i = 0; i < t.length(); i++) {
+            char c = t.charAt(i);
+            int count = tCharFrequency.getOrDefault(c, 0);
+            tCharFrequency.put(c, count + 1);
+        }
+
+        // 定义左右指针，指向滑动窗口的起始和结束位置
+        int start = 0, end = 1;
+
+        // 定义一个HashMap，保存s子串中字符出现的频次
+        HashMap<Character, Integer> subStrCharFrequency = new HashMap<>();
+
+        // 定义一个“子串贡献值”变量，统计t中的字符在子串中出现了多少
+        int charCount = 0;
+
+        while (end <= s.length()) {
+
+            // end增加之后，新增的字符
+            char newChar = s.charAt(end - 1);
+
+            // 新增字符频次加1
+            if (tCharFrequency.containsKey(newChar)) {
+                subStrCharFrequency.put(newChar, subStrCharFrequency.getOrDefault(newChar, 0) + 1);
+                // 如果子串中频次小于t中频次，当前字符就有贡献
+                if (subStrCharFrequency.get(newChar) <= tCharFrequency.get(newChar))
+                    charCount ++;
+            }
+
+            // 如果当前子串符合覆盖子串的要求，并且比之前的最小子串要短，就替换
+            while ( charCount == t.length() && start < end) {
+                if (minSubString.equals("") || end - start < minSubString.length()) {
+                    minSubString = s.substring(start, end);
+                }
+
+                // 对要删除的字符，频次减1
+                char removedChar = s.charAt(start);
+
+                if (tCharFrequency.containsKey(removedChar)) {
+                    subStrCharFrequency.put(removedChar, subStrCharFrequency.getOrDefault(removedChar, 0) - 1);
+                    // 如果子串中的频次如果不够t中的频次，贡献值减少
+                    if (subStrCharFrequency.get(removedChar) < tCharFrequency.get(removedChar))
+                        charCount --;
+                }
+
+                // 只要是覆盖子串，就移动初始位置，缩小窗口，寻找当前的局部最优解
+                start ++;
+            }
+            // 如果不是覆盖子串，需要扩大窗口，继续寻找新的子串
+            end ++;
+        }
+        return minSubString;
+    }
+    
+    
+    public static void main(String[] args) {
+        String s = "ADOBECODEBANC";
+        String t = "ABC";
+
+        MinWindowSubstring minWindowSubstring = new MinWindowSubstring();
+        System.out.println(minWindowSubstring.minWindow(s, t));
+    }
+
+}
+```
+
+## 找到字符串中所有字母异位词(#438
+
+给定两个字符串 s 和 p，找到 s 中所有 p 的 异位词 的子串，返回这些子串的起始索引。不考虑答案输出的顺序。
+
+异位词 指由相同字母重排列形成的字符串（包括相同的字符串）。
+
+```
+示例 1:
+
+输入: s = "cbaebabacd", p = "abc"
+输出: [0,6]
+解释:
+起始索引等于 0 的子串是 "cba", 它是 "abc" 的异位词。
+起始索引等于 6 的子串是 "bac", 它是 "abc" 的异位词。
+
+
+示例 2:
+
+输入: s = "abab", p = "ab"
+输出: [0,1,2]
+解释:
+起始索引等于 0 的子串是 "ab", 它是 "ab" 的异位词。
+起始索引等于 1 的子串是 "ba", 它是 "ab" 的异位词。
+起始索引等于 2 的子串是 "ab", 它是 "ab" 的异位词。
+```
+
+```java
+public class SlidingWindowMaximum {
+
+    // 方法四：左右扫描
+    public int[] maxSlidingWindow(int[] nums, int k){
+        int n = nums.length;
+        // 定义一个结果数组
+        int[] result = new int[n - k + 1];
+
+        // 定义存放块内最大值的left和right数组
+        int[] left = new int[n];
+        int[] right = new int[n];
+
+        // 遍历数组，左右扫描
+        for (int i = 0; i < n; i++){
+            // 1. 从左到右
+            if (i % k == 0){
+                // 如果能整除k，就是块的起始位置
+                left[i] = nums[i];
+            } else {
+                // 如果不是起始位置，就直接跟left[i-1]取最大值即可
+                left[i] = Math.max(left[i-1], nums[i]);
+            }
+            // 2. 从右到左
+            int j = n - 1 - i;    // j就是倒数的i
+            if (j % k == k - 1 || j == n - 1){
+                right[j] = nums[j];
+            } else {
+                right[j] = Math.max(right[j+1], nums[j]);
+            }
+        }
+
+        // 对每个窗口计算最大值
+        for (int i = 0; i < n - k + 1; i++){
+            result[i] = Math.max(right[i], left[i + k - 1]);
+        }
+        return result;
+    }
+
+    public static void main(String[] args) {
+        int[] input = {1,3,-1,-3,5,3,6,7};
+        int k = 3;
+
+        SlidingWindowMaximum slidingWindowMaximum = new SlidingWindowMaximum();
+
+        int[] output = slidingWindowMaximum.maxSlidingWindow(input, k);
+
+        for (int max: output)
+            System.out.print(max + "\t");
     }
 }
 ```
