@@ -1007,7 +1007,7 @@ public class MinWindowSubstring {
 }
 ```
 
-## 找到字符串中所有字母异位词(#438
+## 找到字符串中所有字母异位词(#438)
 
 给定两个字符串 s 和 p，找到 s 中所有 p 的 异位词 的子串，返回这些子串的起始索引。不考虑答案输出的顺序。
 
@@ -1034,55 +1034,551 @@ public class MinWindowSubstring {
 ```
 
 ```java
-public class SlidingWindowMaximum {
+public class FindAllAnagrams {
 
-    // 方法四：左右扫描
-    public int[] maxSlidingWindow(int[] nums, int k){
-        int n = nums.length;
-        // 定义一个结果数组
-        int[] result = new int[n - k + 1];
+    // 方法二：滑动窗口法，分别移动起始和结束位置
+    public List<Integer> findAnagrams(String s, String p){
+        // 定义一个结果列表
+        ArrayList<Integer> result = new ArrayList<>();
 
-        // 定义存放块内最大值的left和right数组
-        int[] left = new int[n];
-        int[] right = new int[n];
+        // 1. 统计p中所有字符频次
+        int[] pCharCounts = new int[26];
 
-        // 遍历数组，左右扫描
-        for (int i = 0; i < n; i++){
-            // 1. 从左到右
-            if (i % k == 0){
-                // 如果能整除k，就是块的起始位置
-                left[i] = nums[i];
-            } else {
-                // 如果不是起始位置，就直接跟left[i-1]取最大值即可
-                left[i] = Math.max(left[i-1], nums[i]);
-            }
-            // 2. 从右到左
-            int j = n - 1 - i;    // j就是倒数的i
-            if (j % k == k - 1 || j == n - 1){
-                right[j] = nums[j];
-            } else {
-                right[j] = Math.max(right[j+1], nums[j]);
-            }
+        for (int i = 0; i < p.length(); i++){
+            pCharCounts[p.charAt(i) - 'a'] ++;
         }
 
-        // 对每个窗口计算最大值
-        for (int i = 0; i < n - k + 1; i++){
-            result[i] = Math.max(right[i], left[i + k - 1]);
+        // 统计子串中所有字符出现频次的数组
+        int[] subStrCharCounts = new int[26];
+        // 定义双指针，指向窗口的起始和结束位置
+        int start = 0, end = 1;
+
+        // 2. 移动指针，总是截取字符出现频次全部小于等于p中字符频次的子串
+        while (end <= s.length()){
+            // 当前新增字符
+            char newChar = s.charAt(end - 1);
+            subStrCharCounts[newChar - 'a'] ++;
+
+            // 3. 判断当前子串是否符合要求
+            // 如果新增字符导致子串中频次超出了p中频次，那么移动start，消除新增字符的影响
+            while ( subStrCharCounts[newChar - 'a'] > pCharCounts[newChar - 'a'] && start < end){
+                char removedChar = s.charAt(start);
+                subStrCharCounts[removedChar - 'a'] --;
+                start ++;
+            }
+
+            // 如果当前子串长度等于p的长度，那么就是一个字母异位词
+            if (end - start == p.length())
+                result.add(start);
+
+            end ++;
         }
         return result;
     }
 
     public static void main(String[] args) {
-        int[] input = {1,3,-1,-3,5,3,6,7};
-        int k = 3;
+        String s = "cbaebabacd";
+        String p = "abc";
 
-        SlidingWindowMaximum slidingWindowMaximum = new SlidingWindowMaximum();
+        FindAllAnagrams findAllAnagrams = new FindAllAnagrams();
 
-        int[] output = slidingWindowMaximum.maxSlidingWindow(input, k);
+        List<Integer> result = findAllAnagrams.findAnagrams(s, p);
 
-        for (int max: output)
-            System.out.print(max + "\t");
+        for (int index: result){
+            System.out.print(index + "\t");
+        }
+        System.out.println();
     }
 }
+```
+
+# 链表
+
+```java
+public class ListNode {
+
+    int val;    // 当前节点保存的数据值
+    ListNode next;
+
+    public ListNode() {
+    }
+
+    public ListNode(int val) {
+        this.val = val;
+    }
+
+    public ListNode(int val, ListNode next) {
+        this.val = val;
+        this.next = next;
+    }
+}
+```
+
+```java
+public class TestLinkedList {
+
+    public static void main(String[] args) {
+        // 构建一个链表，把所有节点创建出来，然后连接
+        ListNode listNode1 = new ListNode(2);
+        ListNode listNode2 = new ListNode(5);
+        ListNode listNode3 = new ListNode(3);
+        ListNode listNode4 = new ListNode(17);
+
+
+        listNode1.next = listNode2;
+        listNode2.next = listNode3;
+        listNode3.next = listNode4;
+        listNode4.next = null;
+
+        printList(listNode1);
+    }
+
+    // 遍历打印链表元素
+    public static void printList(ListNode head){
+        ListNode curNode = head;
+        while (curNode != null){
+            System.out.print(curNode.val + " -> ");
+            curNode = curNode.next;
+        }
+        System.out.print("null");
+        System.out.println();
+    }
+}
+```
+
+## 反转链表(#206)(简单)
+
+给你单链表的头节点 `head` ，请你反转链表，并返回反转后的链表。
+
+```
+输入：head = [1,2,3,4,5]
+输出：[5,4,3,2,1]
+
+输入：head = [1,2]
+输出：[2,1]
+```
+
+```java
+public class ReverseLinkedList {
+    // 方法一：迭代
+    public ListNode reverseList1(ListNode head){
+        // 定义两个指针，指向当前访问的节点，以及上一个节点
+        ListNode curr = head;
+        ListNode prev = null;
+
+        // 依次迭代链表中的节点，将next指针指向prev
+        while (curr != null){
+            // 临时保存当前节点的下一个节点
+            ListNode tempNext = curr.next;
+            curr.next = prev;
+
+            // 更新指针，当前指针变为之前的next，上一个指针变为curr
+            prev = curr;
+            curr = tempNext;
+        }
+        //  prev指向的就是末尾的节点，也就是翻转之后的头节点
+        return prev;
+    }
+
+    // 方法二：递归
+    public ListNode reverseList(ListNode head){
+        // 基准情况
+        if (head == null || head.next == null) return head;
+
+        // 递归调用，翻转剩余所有节点
+        ListNode restHead = head.next;
+        ListNode reversedRest = reverseList(restHead);
+
+        // 把当前节点接在翻转之后的链表末尾
+        restHead.next = head;
+        // 当前节点就是链表末尾，直接指向null
+        head.next = null;
+
+        return reversedRest;
+    }
+
+    public static void main(String[] args) {
+        ListNode listNode1 = new ListNode(1);
+        ListNode listNode2 = new ListNode(2);
+        ListNode listNode3 = new ListNode(3);
+        ListNode listNode4 = new ListNode(4);
+        ListNode listNode5 = new ListNode(5);
+
+
+        listNode1.next = listNode2;
+        listNode2.next = listNode3;
+        listNode3.next = listNode4;
+        listNode4.next = listNode5;
+        listNode5.next = null;
+
+        TestLinkedList.printList(listNode1);
+
+        ReverseLinkedList reverseLinkedList = new ReverseLinkedList();
+        TestLinkedList.printList(reverseLinkedList.reverseList(listNode1));
+    }
+}
+```
+
+## 合并两个有序链表(21)(简单)
+
+将两个升序链表合并为一个新的 **升序** 链表并返回。新链表是通过拼接给定的两个链表的所有节点组成的。 
+
+```
+示例:1
+输入：l1 = [1,2,4], l2 = [1,3,4]
+输出：[1,1,2,3,4,4]
+
+示例 2：
+
+输入：l1 = [], l2 = []
+输出：[]
+
+示例 3：
+
+输入：l1 = [], l2 = [0]
+输出：[0]
+```
+
+```java
+public class MergeTwoSortedLists {
+    // 方法一：迭代法
+    public ListNode mergeTwoLists1(ListNode l1, ListNode l2){
+        // 首先，定义一个哨兵节点，它的next指向最终结果的头节点
+        ListNode sentinel = new ListNode(-1);
+
+        // 保存当前结果链表里的最后一个节点，作为判断比较的“前一个节点”
+        ListNode prev = sentinel;
+
+        // 迭代遍历两个链表，直到至少有一个为null
+        while ( l1 != null && l2 != null ){
+            // 比较当前两个链表的头节点，较小的那个就接在结果链表末尾
+            if (l1.val <= l2.val){
+                prev.next = l1;    // 将l1头节点连接到prev后面
+                prev = l1;    // 指针向前移动，以下一个节点作为链表头节点
+                l1 = l1.next;
+            } else {
+                prev.next = l2;    // 将l2头节点连接到prev后面
+                prev = l2;    // 指针向前移动，以下一个节点作为链表头节点
+                l2 = l2.next;
+            }
+        }
+
+        // 循环结束，最多还有一个链表没有遍历完成，因为已经排序，可以直接把剩余节点接到结果链表上
+        prev.next = (l1 == null) ? l2 : l1;
+
+        return sentinel.next;
+    }
+
+    // 方法二：递归
+    public ListNode mergeTwoLists(ListNode l1, ListNode l2){
+        // 基准情况
+        if (l1 == null) return l2;
+        if (l2 == null) return l1;
+
+        // 比较头节点
+        if (l1.val <= l2.val){
+            // l1头节点较小，直接提取出来，剩下的l1和l2继续合并，接在l1后面
+            l1.next = mergeTwoLists(l1.next, l2);
+            return l1;
+        } else {
+            l2.next = mergeTwoLists(l1, l2.next);
+            return l2;
+        }
+    }
+
+    public static void main(String[] args) {
+        ListNode listNode11 = new ListNode(1);
+        ListNode listNode12 = new ListNode(2);
+        ListNode listNode13 = new ListNode(4);
+        ListNode listNode21 = new ListNode(1);
+        ListNode listNode22 = new ListNode(3);
+        ListNode listNode23 = new ListNode(4);
+
+        listNode11.next = listNode12;
+        listNode12.next = listNode13;
+        listNode13.next = null;
+        listNode21.next = listNode22;
+        listNode22.next = listNode23;
+        listNode23.next = null;
+
+        TestLinkedList.printList(listNode11);
+        TestLinkedList.printList(listNode21);
+
+        MergeTwoSortedLists mergeTwoSortedLists = new MergeTwoSortedLists();
+        TestLinkedList.printList(mergeTwoSortedLists.mergeTwoLists(listNode11, listNode21));
+    }
+}
+```
+
+## 删除链表的倒数第 N 个结点(#19)
+
+给你一个链表，删除链表的倒数第 `n` 个结点，并且返回链表的头结点。
+
+```
+示例 1：
+输入：head = [1,2,3,4,5], n = 2
+输出：[1,2,3,5]
+
+示例 2：
+
+输入：head = [1], n = 1
+输出：[]
+
+示例 3：
+
+输入：head = [1,2], n = 1
+输出：[1]
+
+```
+
+```java
+public class RemoveNthNodeFromEnd {
+
+    // 方法三：双指针
+    public ListNode removeNthFromEnd(ListNode head, int n){
+        // 定义一个哨兵节点，next指向头节点
+        ListNode sentinel = new ListNode(-1, head);
+
+        // 定义前后双指针
+        ListNode first = sentinel, second = sentinel;
+
+        // 1. first先走n+1步
+        for (int i = 0; i < n + 1; i++)
+            first = first.next;
+
+        // 2. first、second同时前进，当first变为null，second就是倒数第n+1个节点
+        while (first != null){
+            first = first.next;
+            second = second.next;
+        }
+
+        // 3. 删除倒数第n个节点
+        second.next = second.next.next;
+
+        return sentinel.next;
+    }
+
+    public static void main(String[] args) {
+        ListNode listNode1 = new ListNode(1);
+        ListNode listNode2 = new ListNode(2);
+        ListNode listNode3 = new ListNode(3);
+        ListNode listNode4 = new ListNode(4);
+        ListNode listNode5 = new ListNode(5);
+
+
+        listNode1.next = listNode2;
+        listNode2.next = listNode3;
+        listNode3.next = listNode4;
+        listNode4.next = listNode5;
+        listNode5.next = null;
+
+        TestLinkedList.printList(listNode1);
+
+        RemoveNthNodeFromEnd removeNthNodeFromEnd = new RemoveNthNodeFromEnd();
+
+        TestLinkedList.printList(removeNthNodeFromEnd.removeNthFromEnd(listNode1, 2));
+    }
+}
+```
+
+# 哈希表
+
+## 只出现一次的数字(#136)(简单)
+
+给定一个非空整数数组，除了某个元素只出现一次以外，其余每个元素均出现两次。找出那个只出现了一次的元素。
+
+说明：
+
+你的算法应该具有线性时间复杂度。 你可以不使用额外空间来实现吗？
+
+```
+示例 1:
+
+输入: [2,2,1]
+输出: 1
+
+示例 2:
+
+输入: [4,1,2,1,2]
+输出: 4
+```
+
+```java
+public class SingleNumber {
+    // 方法一：暴力法
+    public int singleNumber1(int[] nums){
+        // 定义一个列表，保存当前所有出现过一次的元素
+        ArrayList<Integer> singleNumList = new ArrayList<>();
+
+        // 遍历所有元素
+        for (Integer num: nums){
+            if (singleNumList.contains(num)){
+                // 如果已经出现过，删除列表中的元素
+                singleNumList.remove(num);
+            } else {
+                // 没有出现过，直接保存
+                singleNumList.add(num);
+            }
+        }
+        return singleNumList.get(0);
+    }
+
+    // 方法二：保存单独的元素到HashMap
+    public int singleNumber2(int[] nums){
+        HashMap<Integer, Integer> singleNumMap = new HashMap<>();
+
+        for (Integer num: nums){
+            if (singleNumMap.get(num) != null)
+                singleNumMap.remove(num);
+            else
+                singleNumMap.put(num, 1);
+        }
+
+        return singleNumMap.keySet().iterator().next();
+    }
+
+    // 方法三：用set去重，a = 2 * (a+b+c) - (a+b+c+b+c)
+    public int singleNumber3(int[] nums){
+        // 定义一个HashSet进行去重
+        HashSet<Integer> set = new HashSet<>();
+        int arraySum = 0;
+        int setSum = 0;
+
+        // 1. 遍历数组元素，保存到set，并直接求和
+        for (int num: nums){
+            set.add(num);
+            arraySum += num;
+        }
+        // 2. 集合所有元素求和
+        for (int num: set)
+            setSum += num;
+
+        // 3. 计算结果
+        return setSum * 2 - arraySum;
+    }
+
+    // 方法四：数学方法（做异或）
+    public int singleNumber(int[] nums){
+        int result = 0;
+        // 遍历所有数据，按位做异或
+        for (int num: nums)
+            result ^= num;
+
+        return result;
+    }
+
+    public static void main(String[] args) {
+        int[] nums = {4,1,2,1,2};
+        SingleNumber singleNumber = new SingleNumber();
+        System.out.println(singleNumber.singleNumber(nums));
+    }
+}
+
+```
+
+## 最长连续序列(#128)
+
+给定一个未排序的整数数组 nums ，找出数字连续的最长序列（不要求序列元素在原数组中连续）的长度。
+
+请你设计并实现时间复杂度为 O(n) 的算法解决此问题。
+
+```
+示例 1：
+
+输入：nums = [100,4,200,1,3,2]
+输出：4
+解释：最长数字连续序列是 [1, 2, 3, 4]。它的长度为 4。
+
+示例 2：
+
+输入：nums = [0,3,7,2,5,8,4,6,0,1]
+输出：9
+```
+
+```java
+public class LongestConsecutiveSequence {
+    // 方法三：进一步改进
+    public int longestConsecutiveSequence(int[] nums){
+        // 定义一个变量，保存当前最长连续序列的长度
+        int maxLength = 0;
+
+        // 定义一个HashSet，保存所有出现的数值
+        HashSet<Integer> hashSet = new HashSet<>();
+
+        // 1. 遍历所有元素，保存到HashSet
+        for (int num: nums){
+            hashSet.add(num);
+        }
+
+        // 2. 遍历数组，以每个元素作为起始点，寻找连续序列
+        for (int i = 0; i < nums.length; i++){
+            // 保存当前元素作为起始点
+            int currNum = nums[i];
+            // 保存当前连续序列长度
+            int currLength = 1;
+
+            // 判断：只有当前元素的前驱不存在的情况下，才去进行寻找连续序列的操作
+            if (!hashSet.contains(currNum - 1)) {
+                // 寻找后续数字，组成连续序列
+                while ( hashSet.contains(currNum + 1) ){
+                    currLength ++;
+                    currNum ++;
+                }
+
+                // 判断当前连续序列长度是否为最大
+                maxLength = currLength > maxLength ? currLength : maxLength;
+            }
+        }
+
+        return maxLength;
+    }
+
+    public static void main(String[] args) {
+        int[] nums1 = {100,4,200,1,3,2};
+        int[] nums2 = {0,3,7,2,5,8,4,6,0,1};
+
+        LongestConsecutiveSequence longestConsecutiveSequence = new LongestConsecutiveSequence();
+        System.out.println(longestConsecutiveSequence.longestConsecutiveSequence(nums1));
+        System.out.println(longestConsecutiveSequence.longestConsecutiveSequence(nums2));
+    }
+}
+```
+
+## LRU 缓存(146)
+
+请你设计并实现一个满足  LRU (最近最少使用) 缓存 约束的数据结构。
+实现 `LRUCache` 类：
+
+- `LRUCache(int capacity)` 以 正整数 作为容量 `capacity` 初始化 LRU 缓存
+- `int get(int key)` 如果关键字 `key `存在于缓存中，则返回关键字的值，否则返回 -1 。
+- `void put(int key, int value)` 如果关键字 `key `已经存在，则变更其数据值 `value `；如果不存在，则向缓存中插入该组 `key-value` 。如果插入操作导致关键字数量超过 `capacity `，则应该 逐出 最久未使用的关键字。
+
+函数 `get `和 `put` 必须以 O(1) 的平均时间复杂度运行。
+
+```
+示例：
+
+输入
+["LRUCache", "put", "put", "get", "put", "get", "put", "get", "get", "get"]
+[[2], [1, 1], [2, 2], [1], [3, 3], [2], [4, 4], [1], [3], [4]]
+输出
+[null, null, null, 1, null, -1, null, -1, 3, 4]
+
+解释
+LRUCache lRUCache = new LRUCache(2);
+lRUCache.put(1, 1); // 缓存是 {1=1}
+lRUCache.put(2, 2); // 缓存是 {1=1, 2=2}
+lRUCache.get(1);    // 返回 1
+lRUCache.put(3, 3); // 该操作会使得关键字 2 作废，缓存是 {1=1, 3=3}
+lRUCache.get(2);    // 返回 -1 (未找到)
+lRUCache.put(4, 4); // 该操作会使得关键字 1 作废，缓存是 {4=4, 3=3}
+lRUCache.get(1);    // 返回 -1 (未找到)
+lRUCache.get(3);    // 返回 3
+lRUCache.get(4);    // 返回 4
+
+```
+
+```
+
 ```
 
