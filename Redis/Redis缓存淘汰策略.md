@@ -589,8 +589,6 @@ public class LRUCacheDemo {
     }
 ```
 
-
-
 #### 完全手写
 
    图解双向队列
@@ -633,8 +631,8 @@ public class LRUCacheDemo {
 
 2. 定义双向链表，里面存放的就是 Node 对象，Node 节点之间通过 `prev` 和 `next` 指针连接起来
 
-   ```
-     // 2. 构建一个虚拟的双向链表,里面存放的就是Node
+   ```java
+       // 2. 构建一个虚拟的双向链表,里面存放的就是Node
        class DoubleLinkedList<K, V> {
            Node<K, V> head;
            Node<K, V> tail;
@@ -649,45 +647,51 @@ public class LRUCacheDemo {
            }
    
    
-           // 3. 添加到节点头部
-           public void addHead(Node<K, V> node) {
+           // 3. 添加到节点尾部
+           public void addTail(Node<K, V> node) {
    
    
-               node.prev = head;
-               node.next = head.next;
-               head.next.prev = node;
-               head.next = node;
+               node.next = tail;
+               node.prev = tail.prev;
+   
+               tail.prev.next = node;
+               tail.prev = node;
+   
            }
    
            // 4. 删除节点
            public void removeNode(Node<K, V> node) {
    
-               node.next.prev = node.prev;
                node.prev.next = node.next;
-               node.prev = null;
-               node.next = null;
+               node.next.prev = node.prev;
+   
+   
            }
    
-           // 5. 获得最后一个节点
-           public Node<K, V> getLast() {
-   
-               if (tail.prev == head) {
-                   return null;
-               }
-               return tail.prev;
+           // 获取头节点
+           public Node getHead() {
+               return head.next;
            }
+   
+           public Node removeHead() {
+               Node removeNode = getHead();
+               removeNode(removeNode);
+               return removeNode;
+           }
+   
        }
    ```
 
 3. 通过 `HashMap` 和 `DoubleLinkedList` 构建 `LinkedHashMap`，我们这里可是将最近最常使用的节点放在了双向链表的头部（和 `LinkedHashMap` 不同哦）
 
    ```java
-       private int cacheSize;
+       private int capacity;
+       private int size;
        Map<Integer, Node<Integer, Integer>> map;
        DoubleLinkedList<Integer, Integer> doubleLinkedList;
    
-       public LRUCacheDemo2(int cacheSize) {
-           this.cacheSize = cacheSize; //缓存大小
+       public LRUCacheDemo2(int capacity) {
+           this.capacity = capacity; //缓存大小
            map = new HashMap<>();  //根据HashMap进行查找
            doubleLinkedList = new DoubleLinkedList<>();
        }
@@ -699,31 +703,34 @@ public class LRUCacheDemo {
    
            Node<Integer, Integer> node = map.get(key);
            doubleLinkedList.removeNode(node);
-           doubleLinkedList.addHead(node);
+           doubleLinkedList.addTail(node);
    
            return node.value;
        }
    
        public void put(int key, int value) {
            if (map.containsKey(key)) { //判断当前key是否存在,存在则更新
+   
                Node<Integer, Integer> node = map.get(key);
                node.value = value;
-               map.put(key, node);
+   
                doubleLinkedList.removeNode(node);
-               doubleLinkedList.addHead(node);
+               doubleLinkedList.addTail(node);
            } else {
    
-               if (map.size() == cacheSize) {  //判断当前map是否已经满了
-                   Node<Integer, Integer> last = doubleLinkedList.getLast();
-                   map.remove(last.key);
-                   doubleLinkedList.removeNode(last);
+               if (size >= capacity) {  //判断当前map是否已经满了
    
+                   Node removeHead = doubleLinkedList.removeHead();
+                   map.remove(removeHead.key);
+                   size--;
                }
    
                //新增Node节点
                Node<Integer, Integer> node = new Node<>(key, value);
                map.put(key, node);
-               doubleLinkedList.addHead(node);
+               doubleLinkedList.addTail(node);
+               size++;
+   
            }
        }
    ```
@@ -771,7 +778,9 @@ public class LRUCacheDemo {
 完整代码
 
 ```java
-package com.interview.demo.leetcode;
+package com.anno.algorithm;
+
+import org.w3c.dom.Node;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -779,7 +788,7 @@ import java.util.Map;
 /**
  * @title: LRUCacheDemo2
  * @Author Wen
- * @Date: 28/9/2021 1:04 PM
+ * @Date: 30/12/2021 下午8:39
  * @Version 1.0
  */
 public class LRUCacheDemo2 {
@@ -817,41 +826,47 @@ public class LRUCacheDemo2 {
         }
 
 
-        // 3. 添加到节点头部
-        public void addHead(Node<K, V> node) {
+        // 3. 添加到节点尾部
+        public void addTail(Node<K, V> node) {
 
 
-            node.prev = head;
-            node.next = head.next;
-            head.next.prev = node;
-            head.next = node;
+            node.next = tail;
+            node.prev = tail.prev;
+
+            tail.prev.next = node;
+            tail.prev = node;
+
         }
 
         // 4. 删除节点
         public void removeNode(Node<K, V> node) {
 
-            node.next.prev = node.prev;
             node.prev.next = node.next;
-            node.prev = null;
-            node.next = null;
+            node.next.prev = node.prev;
+
+
         }
 
-        // 5. 获得最后一个节点
-        public Node<K, V> getLast() {
-
-            if (tail.prev == head) {
-                return null;
-            }
-            return tail.prev;
+        // 获取头节点
+        public Node getHead() {
+            return head.next;
         }
+
+        public Node removeHead() {
+            Node removeNode = getHead();
+            removeNode(removeNode);
+            return removeNode;
+        }
+
     }
 
-    private int cacheSize;
+    private int capacity;
+    private int size;
     Map<Integer, Node<Integer, Integer>> map;
     DoubleLinkedList<Integer, Integer> doubleLinkedList;
 
-    public LRUCacheDemo2(int cacheSize) {
-        this.cacheSize = cacheSize; //缓存大小
+    public LRUCacheDemo2(int capacity) {
+        this.capacity = capacity; //缓存大小
         map = new HashMap<>();  //根据HashMap进行查找
         doubleLinkedList = new DoubleLinkedList<>();
     }
@@ -863,31 +878,34 @@ public class LRUCacheDemo2 {
 
         Node<Integer, Integer> node = map.get(key);
         doubleLinkedList.removeNode(node);
-        doubleLinkedList.addHead(node);
+        doubleLinkedList.addTail(node);
 
         return node.value;
     }
 
     public void put(int key, int value) {
         if (map.containsKey(key)) { //判断当前key是否存在,存在则更新
+
             Node<Integer, Integer> node = map.get(key);
             node.value = value;
-            map.put(key, node);
+
             doubleLinkedList.removeNode(node);
-            doubleLinkedList.addHead(node);
+            doubleLinkedList.addTail(node);
         } else {
 
-            if (map.size() == cacheSize) {  //判断当前map是否已经满了
-                Node<Integer, Integer> last = doubleLinkedList.getLast();
-                map.remove(last.key);
-                doubleLinkedList.removeNode(last);
+            if (size >= capacity) {  //判断当前map是否已经满了
 
+                Node removeHead = doubleLinkedList.removeHead();
+                map.remove(removeHead.key);
+                size--;
             }
 
             //新增Node节点
             Node<Integer, Integer> node = new Node<>(key, value);
             map.put(key, node);
-            doubleLinkedList.addHead(node);
+            doubleLinkedList.addTail(node);
+            size++;
+
         }
     }
 
