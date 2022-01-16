@@ -12,7 +12,7 @@ binlog，又称为二进制日志，它会记录数据库执行更改的所有�
 
 系统为每个客户端线程分配一个**binlog cache**，其大小值控制参数是**binlog_cache_size**。如果**binlog cache的值**超过阀值，就会临时持久化到磁盘。当事务提交的时候，再将 binlog cache中完整的事务持久化到磁盘中，并且清空binlog cache。
 
- 	![](http://120.77.237.175:9080/photos/eight/mysql/08.jpg)
+![](http://120.77.237.175:9080/photos/eight/mysql/08.jpg)
 
 binlog写文件分**write和fsync**两个过程：
 
@@ -21,7 +21,7 @@ binlog写文件分**write和fsync**两个过程：
 
 write和fsync的写入时机，是由变量sync_binlog控制的：
 
- 	![](http://120.77.237.175:9080/photos/eight/mysql/09.jpg)
+![](http://120.77.237.175:9080/photos/eight/mysql/09.jpg)
 
 如果IO出现性能瓶颈，可以将**sync_binlog**设置成一个较大的值。比如设置为（100~1000）。但是，会存在数据丢失的风险，当主机异常重启时，会**丢失N个最近提交的事务binlog**。
 

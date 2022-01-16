@@ -1,10 +1,10 @@
-# AbstractQueuedSynchronizer
+# `AbstractQueuedSynchronizer`
 
-## AQS理论初步认识
+## `AQS`理论初步认识
 
 `AbstractQueuedSynchronizer `抽象队列同步器。
 
-一般我们说的 AQS 指的是` java.util.concurrent.locks` 包下的 `AbstractQueuedSynchronizer`，但其实还有另外三种抽象队列同步器：`AbstractOwnableSynchronizer`、`AbstractQueuedLongSynchronizer` 和 `AbstractQueuedSynchronizer`
+一般我们说的 `AQS `指的是` java.util.concurrent.locks` 包下的 `AbstractQueuedSynchronizer`，但其实还有另外三种抽象队列同步器：`AbstractOwnableSynchronizer`、`AbstractQueuedLongSynchronizer` 和 `AbstractQueuedSynchronizer`
 ```java
 public abstract class AbstractQueuedSynchronizer
     extends AbstractOwnableSynchronizer
@@ -15,16 +15,16 @@ public abstract class AbstractQueuedSynchronizer
 
 ![](http://120.77.237.175:9080/photos/eight/java/juc/aqs/01.jpg)
 
-AQS 是用来构建锁或者其它同步器组件的重量级基础框架及整个JUC体系的基石， 通过内置的FIFO队列来完成资源获取线程的排队工作，并通过一个int类变量（state）表示持有锁的状态
+`AQS `是用来构建锁或者其它同步器组件的重量级基础框架及整个`JUC`体系的基石， 通过内置的`FIFO`队列来完成资源获取线程的排队工作，并通过一个`int`类变量（`state`）表示持有锁的状态
 
-CLH：Craig、Landin and Hagersten 队列，是一个双向链表，AQS中的队列是CLH变体的虚拟双向队列FIFO
+CLH：Craig、Landin and Hagersten 队列，是一个双向链表，`AQS`中的队列是`CLH`变体的虚拟双向队列`FIFO`
 
 ![](http://120.77.237.175:9080/photos/eight/java/juc/aqs/02.jpg)
 
 ------------------------------------------------
-## AQS 是 JUC 的基石
+## `AQS` 是 `JUC `的基石
 
-> **和AQS有关的并发编程类**
+> **和`AQS`有关的并发编程类**
 
 ![](http://120.77.237.175:9080/photos/eight/java/juc/aqs/03.jpg)
 
@@ -36,15 +36,15 @@ CLH：Craig、Landin and Hagersten 队列，是一个双向链表，AQS中的队
 
 ------
 
-## AQS 能干嘛
+## `AQS` 能干嘛
 
-> **AQS：加锁会导致阻塞**
+> **`AQS`：加锁会导致阻塞**
 
 有阻塞就需要排队，实现排队必然需要有某种形式的队列来进行管理
 
 抢到资源的线程直接使用办理业务，抢占不到资源的线程的必然涉及一种排队等候机制，抢占资源失败的线程继续去等待（类似办理窗口都满了，暂时没有受理窗口的顾客只能去候客区排队等候），仍然保留获取锁的可能且获取锁流程仍在继续（候客区的顾客也在等着叫号，轮到了再去受理窗口办理业务）。
 
-既然说到了排队等候机制，那么就一定会有某种队列形成，这样的队列是什么数据结构呢？如果共享资源被占用，就需要一定的阻塞等待唤醒机制来保证锁分配。这个机制主要用的是CLH队列的变体实现的，将暂时获取不到锁的线程加入到队列中，这个队列就是AQS的抽象表现。它将请求共享资源的线程封装成队列的结点（Node） ，通过CAS、自旋以及`LockSuport.park()`的方式，维护state变量的状态，使并发达到同步的效果。
+既然说到了排队等候机制，那么就一定会有某种队列形成，这样的队列是什么数据结构呢？如果共享资源被占用，就需要一定的阻塞等待唤醒机制来保证锁分配。这个机制主要用的是`CLH`队列的变体实现的，将暂时获取不到锁的线程加入到队列中，这个队列就是`AQS`的抽象表现。它将请求共享资源的线程封装成队列的结点（`Node`） ，通过`CAS`、自旋以及`LockSuport.park()`的方式，维护`state`变量的状态，使并发达到同步的效果。
 
 ![](http://120.77.237.175:9080/photos/eight/java/juc/aqs/02.jpg)
 
@@ -81,8 +81,8 @@ import sun.misc.Unsafe;
 
 有阻塞就需要排队，实现排队必然需要队列
 
-1. `AQS`使用一个`volatile`的int类型的成员变量来表示同步状态，通过内置的 `FIFO`队列来完成资源获取的排队工作将每条要去抢占资源的线程封装成 一个`Node`节点来实现锁的分配，通过`CAS`完成对State值的修改。
-2. `Node `节点是啥？答：你有见过 HashMap 的 Node 节点吗？JDK 用` static class Node<K,V> implements Map.Entry<K,V>` { 来封装我们传入的 KV 键值对。这里也是一样的道理，`JDK `使用 `Node`来封装（管理）`Thread`
+1. `AQS`使用一个`volatile`的int类型的成员变量来表示同步状态，通过内置的 `FIFO`队列来完成资源获取的排队工作将每条要去抢占资源的线程封装成 一个`Node`节点来实现锁的分配，通过`CAS`完成对`State`值的修改。
+2. `Node `节点是啥？答：你有见过 `HashMap `的 `Node` 节点吗？JDK 用` static class Node<K,V> implements Map.Entry<K,V>` { 来封装我们传入的 KV 键值对。这里也是一样的道理，`JDK `使用 `Node`来封装（管理）`Thread`
 3. 可以将 `Node `和 `Thread `类比于候客区的椅子和等待用餐的顾客
 
 ![](http://120.77.237.175:9080/photos/eight/java/juc/aqs/04.jpg)
@@ -106,7 +106,7 @@ import sun.misc.Unsafe;
 
 3. `AQS`的`CLH`队列
 
-   CLH队列（三个大牛的名字组成），为一个双向队列，类似于银行侯客区的等待顾客
+   `CLH`队列（三个大牛的名字组成），为一个双向队列，类似于银行侯客区的等待顾客
 
    ![](http://120.77.237.175:9080/photos/eight/java/juc/aqs/06.jpg)
 
@@ -150,7 +150,7 @@ import sun.misc.Unsafe;
            volatile int waitStatus;
    ```
 
-   Node类的内部结构
+   `Node`类的内部结构
 
    ```java
    static final class Node{
@@ -206,23 +206,23 @@ import sun.misc.Unsafe;
 
 5. 总结
 
-   有阻塞就需要排队，实现排队必然需要队列，通过state 变量 + CLH双端 Node 队列实现
+   有阻塞就需要排队，实现排队必然需要队列，通过`state `变量 + `CLH`双端 `Node `队列实现
 
 ------
 
-> **AQS同步队列的基本结构**
+> **`AQS`同步队列的基本结构**
 
 ![](http://120.77.237.175:9080/photos/eight/java/juc/aqs/07.jpg)
 
 ------
 
-> **AQS底层是怎么排队的？**
+> **`AQS`底层是怎么排队的？**
 
-通过调用 `LockSupport.pork()` 来进行排队
+通过调用 `LockSupport.park()` 来进行排队
 
 ------
 
-## 从 `ReentrantLock`进入 SQS
+## 从 `ReentrantLock`进入 AQS
 
 ### `ReentrantLock`锁
 
@@ -232,7 +232,7 @@ import sun.misc.Unsafe;
 
 > **`ReentrantLock `的原理**
 
-`ReentrantLock` 实现了 Lock 接口，在 `ReentrantLock` 内部聚合了一个 `AbstractQueuedSynchronizer` 的实现类
+`ReentrantLock` 实现了 `Lock `接口，在 `ReentrantLock` 内部聚合了一个 `AbstractQueuedSynchronizer` 的实现类
 
 ![](http://120.77.237.175:9080/photos/eight/java/juc/aqs/08.jpg)
 
@@ -246,7 +246,7 @@ import sun.misc.Unsafe;
 
 ![](http://120.77.237.175:9080/photos/eight/java/juc/aqs/09.jpg)
 
-`ReentrantLock` 的构造函数：不传参数表示创建非公平锁；参数为 true 表示创建公平锁；参数为 false 表示创建非公平锁
+`ReentrantLock` 的构造函数：不传参数表示创建非公平锁；参数为 `true `表示创建公平锁；参数为 `false `表示创建非公平锁
 
 ![](http://120.77.237.175:9080/photos/eight/java/juc/aqs/10.jpg)
 
@@ -301,7 +301,7 @@ public final void acquire(int arg) {
 
 ------
 
-### 从非公平锁的 lock() 入手
+### 从非公平锁的 `lock()` 入手
 
 源码解读比较困难，我们这里举个栗子，假设 A、B、C 三个人都要去银行窗口办理业务，但是银行窗口只有一个个，我们使用 `lock.lock()` 模拟这种情况
 
@@ -378,7 +378,7 @@ public class AQSDemo {
 
 - 第一次执行` lock()`方法
 
-  由于第一次执行 `lock()` 方法，`state`变量的值等于 0，表示 `lock`锁没有被占用，此时执行` compareAndSetState(0, 1) `CAS 判断，可得 state == expected == 0，因此 CAS 成功，将 state 的值修改为 1
+  由于第一次执行 `lock()` 方法，`state`变量的值等于 0，表示 `lock`锁没有被占用，此时执行` compareAndSetState(0, 1) `CAS 判断，可得` state == expected == 0`，因此 CAS 成功，将 `state `的值修改为 1
 
   ```java
      /**
@@ -400,7 +400,7 @@ public class AQSDemo {
       }
   ```
 
-  再来复习下 CAS：通过 `Unsafe `提供的 `compareAndSwapXxx()`方法保证修改操作的原子性（通过 CPU 原语保证），如果变量的值等于期望值，则修改变量的值为 `update`，并返回 `true`；若不等，则返回 false。this 代表当前对象，`stateOffset `表示 `state `变量在该对象中的偏移量
+  再来复习下 CAS：通过 `Unsafe `提供的 `compareAndSwapXxx()`方法保证修改操作的原子性（通过 CPU 原语保证），如果变量的值等于期望值，则修改变量的值为 `update`，并返回 `true`；若不等，则返回 `false`。`this `代表当前对象，`stateOffset `表示 `state `变量在该对象中的偏移量
 
   ```java
       protected final boolean compareAndSetState(int expect, int update) {
@@ -409,7 +409,7 @@ public class AQSDemo {
       }
   ```
 
-  再来看看 `setExclusiveOwnerThread()` 方法做了啥：将拥有 lock 锁的线程修改为线程 A
+  再来看看 `setExclusiveOwnerThread()` 方法做了啥：将拥有 `lock `锁的线程修改为线程 A
 
   ```java
       protected final void setExclusiveOwnerThread(Thread thread) {
@@ -466,11 +466,11 @@ public class AQSDemo {
 
   `nonfairTryAcquire(acquires)` 正常的执行流程：
 
-  在` nonfairTryAcquire() `方法中，大多数情况都是如下的执行流程：线程 B 执行 `int c = getState()` 时，获取到 `state` 变量的值为 1，表示 `lock `锁正在被占用；于是执行 `if (c == 0) `{ 发现条件不成立，接着执行下一个判断条件 `else if (current == getExclusiveOwnerThread())` {，current 线程为线程 B，而 `getExclusiveOwnerThread()` 方法返回正在占用 `lock `锁的线程，为线程 A，因此 `tryAcquire() `方法最后会 `return false`，表示并没有抢占到 `lock `锁
+  在` nonfairTryAcquire() `方法中，大多数情况都是如下的执行流程：线程 B 执行 `int c = getState()` 时，获取到 `state` 变量的值为 1，表示 `lock `锁正在被占用；于是执行 `if (c == 0) `{ 发现条件不成立，接着执行下一个判断条件 `else if (current == getExclusiveOwnerThread())` {，`current` 线程为线程 B，而 `getExclusiveOwnerThread()` 方法返回正在占用 `lock `锁的线程，为线程 A，因此 `tryAcquire() `方法最后会 `return false`，表示并没有抢占到 `lock `锁
 
   ![](http://120.77.237.175:9080/photos/eight/java/juc/aqs/17.jpg)
 
-  **补充**：`getExclusiveOwnerThread()` 方法返回正在占用 lock 锁的线程（排他锁，`exclusive`）
+  **补充**：`getExclusiveOwnerThread()` 方法返回正在占用 `lock `锁的线程（排他锁，`exclusive`）
 
   ```java
       protected final void setExclusiveOwnerThread(Thread thread) {
@@ -484,7 +484,7 @@ public class AQSDemo {
 
   第一种情况是，走到` int c = getState()` 语句时，此时线程 A 恰好执行完成，让出了 `lock `锁，那么 `state `变量的值为 0，当然发生这种情况的概率很小，那么线程 B 执行 CAS 操作成功后，将占用 `lock `锁的线程修改为自己，然后返回 true，表示抢占锁成功。其实这里还有一种情况，需要留到 `unlock()` 方法才能说清楚
 
-  第二种情况为可重入锁的表现，假设 A 线程又再次抢占 lock 锁（当然示例代码里面并没有体现出来），这时 `current == getExclusiveOwnerThread()` 条件成立，将 `state `变量的值加上 `acquire`，这种情况下也应该 return true，表示线程 A 正在占用 `lock `锁。因此，state 变量的值是可以大于 1 的
+  第二种情况为可重入锁的表现，假设 A 线程又再次抢占 `lock `锁（当然示例代码里面并没有体现出来），这时 `current == getExclusiveOwnerThread()` 条件成立，将 `state `变量的值加上 `acquire`，这种情况下也应该 `return true`，表示线程 A 正在占用 `lock `锁。因此，`state` 变量的值是可以大于 1 的
 
   ![](http://120.77.237.175:9080/photos/eight/java/juc/aqs/18.jpg)
 
@@ -536,20 +536,20 @@ public class AQSDemo {
   第一次执行 `for`循环：现在解释起来就不费劲了，当线程 B 进来时，双端同步队列为空，此时肯定要先构建一个哨兵节点。此时` tail == null`，因此进入` if(t == null)` { 的分支，头指针指向哨兵节点，此时队列中只有一个节点，尾节点即是头结点，因此尾指针也指向该哨兵节点
 
   ![](http://120.77.237.175:9080/photos/eight/java/juc/aqs/20.jpg)
-
-第二次执行 `for`循环：现在该将装着线程 B 的节点放入双端同步队列中，此时 `tail`指向了哨兵节点，并不等于 `null`，因此 `if (t == null) `不成立，进入 `else `分支。以尾插法的方式，先将 `node`（装着线程 B 的节点）的 `prev `指向之前的 `tail`，再将 node 设置为尾节点（执行` compareAndSetTail(t, node)`），最后将` t.next` 指向 `node`，最后执行 `return t`结束 `for `循环
-
-![](http://120.77.237.175:9080/photos/eight/java/juc/aqs/21.jpg)
-
-**补充**：`compareAndSetTail(t, node)` 方法的实现
-
-```java
-    private final boolean compareAndSetTail(Node expect, Node update) {
-        return unsafe.compareAndSwapObject(this, tailOffset, expect, update);
-    }
-```
-
-**注意**：哨兵节点和 `nodeB` 节点的 `waitStatus` 均为 0，表示在等待队列中
+  
+  第二次执行 `for`循环：现在该将装着线程 B 的节点放入双端同步队列中，此时 `tail`指向了哨兵节点，并不等于 `null`，因此 `if (t == null) `不成立，进入 `else `分支。以尾插法的方式，先将 `node`（装着线程 B 的节点）的 `prev `指向之前的 `tail`，再将 node 设置为尾节点（执行` compareAndSetTail(t, node)`），最后将` t.next` 指向 `node`，最后执行 `return t`结束 `for `循环
+  
+  ![](http://120.77.237.175:9080/photos/eight/java/juc/aqs/21.jpg)
+  
+  **补充**：`compareAndSetTail(t, node)` 方法的实现
+  
+  ```java
+      private final boolean compareAndSetTail(Node expect, Node update) {
+          return unsafe.compareAndSwapObject(this, tailOffset, expect, update);
+      }
+  ```
+  
+  > **注意**：哨兵节点和 `nodeB` 节点的 `waitStatus` 均为 0，表示在等待队列中
 
 ------
 
@@ -689,7 +689,7 @@ public class AQSDemo {
     }
 ```
 
-执行到 `shouldParkAfterFailedAcquire(p, node)`这时, 这时根据上面分析的过程,我们清楚现在线程C节点Node是尾节点,因此,会把C的前一个节点,就是B的节点状态0变更为-1
+执行到 `shouldParkAfterFailedAcquire(p, node)`这时, 这时根据上面分析的过程,我们清楚现在线程C节点`Node`是尾节点,因此,会把C的前一个节点,就是B的节点状态0变更为-1
 
 ```java
     private static boolean shouldParkAfterFailedAcquire(Node pred, Node node) {
@@ -725,21 +725,22 @@ public class AQSDemo {
 
 ------
 
-总结：
-
-如果前驱节点的 `waitstatus`是 `SIGNAL`状态（-1），即` shouldParkAfterFailedAcquire()` 方法会返回 `true`，程序会继续向下执行 `parkAndCheckInterrupt() `方法，用于将当前线程挂起
-
-根据 `park()` 方法 API 描述，程序在下面三种情况会继续向下执行：
-
-1. 被 `unpark`
-2. 被中断`（interrupt）`
-3. 其他不合逻辑的返回才会然续向下执行
-
-因上述三种情况程序执行至此，返回当前线程的中断状态，并清空中断状态。如果程序由于被中断，该方法会返回 true
+> 总结：
+>
+> 如果前驱节点的 `waitstatus`是 `SIGNAL`状态（-1），即` shouldParkAfterFailedAcquire()` 方法会返回 `true`，程序会继续向下执行 `parkAndCheckInterrupt() `方法，用于将当前线程挂起
+>
+> 根据 `park()` 方法 API 描述，程序在下面三种情况会继续向下执行：
+>
+> 1. 被 `unpark`
+> 2. 被中断`（interrupt）`
+> 3. 其他不合逻辑的返回才会然续向下执行
+>
+> 因上述三种情况程序执行至此，返回当前线程的中断状态，并清空中断状态。如果程序由于被中断，该方法会返回 true
+>
 
 ------
 
-### 总算要 unlock() 
+### 总算要` unlock() `
 
 > **线程 A 执行 `unlock()` 方法**
 
@@ -759,7 +760,7 @@ A 线程终于要 `unlock()`
 
 `release()` 方法的执行流程
 
-其实主要就是看看 `tryRelease(arg) `方法和 `unparkSuccessor(h)` 方法的执行流程，这里先大概说以下，能有个印象：线程 A 即将让出 `lock` 锁，因此 `tryRelease()`执行后将返回 `true`，表示礼让成功，`head `指针指向哨兵节点，并且 if 条件满足，可执行 `unparkSuccessor(h)` 方法
+其实主要就是看看 `tryRelease(arg) `方法和 `unparkSuccessor(h)` 方法的执行流程，这里先大概说以下，能有个印象：线程 A 即将让出 `lock` 锁，因此 `tryRelease()`执行后将返回 `true`，表示礼让成功，`head `指针指向哨兵节点，并且` if `条件满足，可执行 `unparkSuccessor(h)` 方法
 
 ```java
     public final boolean release(int arg) {
@@ -810,7 +811,7 @@ A 线程终于要 `unlock()`
 
 `unparkSuccessor(h)` 方法的执行逻辑
 
-在 `release()` 方法中获取到的头结点 h 为哨兵节点，`h.waitStatus == -1`，因此执行 CAS操作将哨兵节点的 `waitStatus` 设置为 0，并将哨兵节点的下一个节点`（s = node.next = nodeB）`获取出来，并唤醒 `nodeB` 中封装的线程`（if (s == null || s.waitStatus > 0) `不成立，只有 `if (s != null) `成立）
+在 `release()` 方法中获取到的头结点` h` 为哨兵节点，`h.waitStatus == -1`，因此执行 CAS操作将哨兵节点的 `waitStatus` 设置为 0，并将哨兵节点的下一个节点`（s = node.next = nodeB）`获取出来，并唤醒 `nodeB` 中封装的线程`（if (s == null || s.waitStatus > 0) `不成立，只有 `if (s != null) `成立）
 
 ```java
     private void unparkSuccessor(Node node) {
@@ -849,7 +850,7 @@ A 线程终于要 `unlock()`
 
 > **杀个回马枪：继续来看 B 线程被唤醒之后的执行逻辑**
 
-再次回到 `lock()` 方法的执行流程中来，线程 B 被 `unpark()` 之后将不再阻塞，继续执行下面的程序，线程 B 正常被唤醒，因此 `Thread.interrupted()` 的值为 `false`，表示线程 B 未被中断
+再次回到 `lock()` 方法的执行流程中来，线程 B 被 `unpark()` 之后将不再阻塞，继续执行下面的程序，线程 B 正常被唤醒，因此 `Thread.interrupted()` 的值首次返为 `true`，表示线程 B 被中断,并重置标识为`false`(详情请看`interrupted`方法)
 
 ```java
     private final boolean parkAndCheckInterrupt() {
@@ -876,20 +877,20 @@ A 线程终于要 `unlock()`
 
 ![](http://120.77.237.175:9080/photos/eight/java/juc/aqs/32.jpg)
 
-将 `p.next` 设置为 `null`，这是原来的哨兵节点就是完全孤立的一个节点，此时 `nodeB` 作为新的哨兵节点
+将 `p.next` 设置为 `null`，这是原来的哨兵节点就是完全孤立的一个节点，此时 `nodeB` 作为新的哨兵节点,旧的哨兵节点这时就等待JVM GC清除了
 
 ![](http://120.77.237.175:9080/photos/eight/java/juc/aqs/33.png)
 
 线程 C 也是类似的执行流程
 
-> 注意,上图有一个误区,就是节点NodeB的waitStatus,应该为-1,当把指针指到NodeB为头节点时,才会对其waitStatus改为0,下面这段代码已经说明一切,
+> 注意,上图有一个误区,就是节点NodeB和哨兵节点的`waitStatus`,应该为-1,当把指针指到NodeB为头节点时,才会对其`waitStatus`改为0,下面这段代码已经说明一切,
 
 ```java
     public final boolean release(int arg) {	//释放锁
         if (tryRelease(arg)) {	//尝试释放锁,利用ReentrantLock.Sync重写此方法进行释放
             Node h = head;	//把头节点赋值给当前节点
             if (h != null && h.waitStatus != 0)	//头节点不为NULL,并且其waitStatus不为0
-                unparkSuccessor(h);	//更改头节点状态,关释放当前阻塞的当前线程
+                unparkSuccessor(h);	//更改头节点状态, 释放当前阻塞的当前线程
             return true;
         }
         return false;
