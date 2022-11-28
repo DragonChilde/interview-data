@@ -88,7 +88,7 @@
 
 ------
 
-# 快速排序
+# 快速排序（重点中的重点）
 
 ```java
     @Test
@@ -104,35 +104,37 @@
 
     }
 
-    private void quickSort(int[] arr, int left, int right) {
-        int x, y, temp;
-        if (left < right) {
-            x = left;
-            y = right;
-            temp = arr[x];
+  private void quickSort(int[] nums, int start, int end) {
 
-            while (x < y) {
-                while (x < y && arr[y] > temp) {
-                    y--;
-                }
-                if (x < y) {
-                    arr[x++] = arr[y];
-                }
-                while (x < y && arr[x] < temp) {
-                    x++;
-                }
-                if (x < y) {
-                    arr[y--] = arr[x];
-                }
-            }
-
-            arr[x] = temp;
-
-            quickSort(arr, left, right - 1);
-            quickSort(arr, left + 1, right);
-        }
-
+    if (start >= end) {
+      return;
     }
+    int mid = partition(nums, start, end);
+    quickSort(nums, start, mid - 1);
+    quickSort(nums, mid + 1, end);
+  }
+
+  private int partition(int nums[], int start, int end) {
+
+    int left = start;
+    int right = end;
+    int pivot = nums[start];
+
+    while (left < right) {
+      while (left < right && nums[right] >= pivot) {
+        right--;
+      }
+      nums[left] = nums[right];
+
+      while (left < right && nums[left] <= pivot) {
+        left++;
+      }
+      nums[right] = nums[left];
+    }
+
+    nums[left] = pivot;
+    return left;
+  }
 ```
 
 # 二分查找

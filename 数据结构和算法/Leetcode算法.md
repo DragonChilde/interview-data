@@ -1582,7 +1582,9 @@ lRUCache.get(4);    // 返回 4
 
 # 栈和队列
 
-## 使用队列实现栈#(225)
+## 使用队列实现栈#(225)(简单)
+
+https://leetcode.cn/problems/implement-stack-using-queues/solution/yong-dui-lie-shi-xian-zhan-by-leetcode-solution/
 
 请你仅使用两个队列实现一个后入先出（LIFO）的栈，并支持普通栈的全部四种操作（`push`、`top`、`pop` 和 `empty`）。
 
@@ -1619,9 +1621,55 @@ myStack.empty(); // 返回 False
 
 ```
 
+使用一个队列解法
 
+```java
+public class MyStack {
 
-## 使用栈实现队列（#232）
+  Queue<Integer> queue;
+
+  public MyStack() {
+    this.queue = new LinkedList<Integer>();
+  }
+
+  public void push(int x) {
+
+    int size = queue.size();
+
+    queue.offer(x);
+
+    for (int i = 0; i < size; i++) {
+
+      queue.offer(queue.poll());
+    }
+  }
+
+  public int pop() {
+    return queue.poll();
+  }
+
+  public int top() {
+    return queue.peek();
+  }
+
+  public boolean empty() {
+    return queue.isEmpty();
+  }
+
+  public static void main(String[] args) {
+    MyStack myStack = new MyStack();
+    myStack.push(1);
+    myStack.push(2);
+    System.out.println(myStack.top());
+    System.out.println(myStack.pop());
+    myStack.empty(); // 返回 False
+  }
+}
+```
+
+## 使用栈实现队列（#232）(简单)
+
+https://leetcode.cn/problems/implement-queue-using-stacks/solution/yong-zhan-shi-xian-dui-lie-by-leetcode-s-xnb6/
 
 请你仅使用两个栈实现先入先出队列。队列应当支持一般队列支持的所有操作（`push`、`pop`、`peek`、`empty`）：
 
@@ -1660,9 +1708,357 @@ myQueue.push(2); // queue is: [1, 2] (leftmost is front of the queue)
 myQueue.peek(); // return 1
 myQueue.pop(); // return 1, queue is [2]
 myQueue.empty(); // return false
-
-来源：力扣（LeetCode）
-链接：https://leetcode-cn.com/problems/implement-queue-using-stacks
-著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
 ```
 
+出队列时反转
+
+```java
+public class MyQueue {
+
+  Deque<Integer> inStack;
+  Deque<Integer> outStack;
+
+  public MyQueue() {
+    inStack = new ArrayDeque<>();
+    outStack = new ArrayDeque<>();
+  }
+
+  public void push(int x) {
+
+    inStack.push(x);
+  }
+
+  public int pop() {
+    if (outStack.isEmpty()) {
+      in2out();
+    }
+    return outStack.pop();
+  }
+
+  public int peek() {
+    if (outStack.isEmpty()) {
+      in2out();
+    }
+
+    return outStack.peek();
+  }
+
+  public boolean empty() {
+    return inStack.isEmpty() && outStack.isEmpty();
+  }
+
+  public void in2out() {
+    while (!inStack.isEmpty()) {
+      outStack.push(inStack.pop());
+    }
+  }
+
+  public static void main(String[] args) {
+    MyQueue myQueue = new MyQueue();
+    myQueue.push(1); // queue is: [1]
+    myQueue.push(2); // queue is: [1, 2] (leftmost is front of the queue)
+    System.out.println(myQueue.peek());
+    System.out.println(myQueue.pop());
+    myQueue.empty(); // return false
+  }
+}
+```
+
+------
+
+## 有效的括号(#20)(简单)
+
+```
+给定一个只包括 '('，')'，'{'，'}'，'['，']' 的字符串 s ，判断字符串是否有效。
+
+有效字符串需满足：
+
+左括号必须用相同类型的右括号闭合。
+左括号必须以正确的顺序闭合。
+每个右括号都有一个对应的相同类型的左括号。
+ 
+
+示例 1：
+
+输入：s = "()"
+输出：true
+示例 2：
+
+输入：s = "()[]{}"
+输出：true
+示例 3：
+
+输入：s = "(]"
+输出：false
+```
+
+```java
+/**
+ * @title: 有效的括号 ValidParentheses @Author Wen @Date: 1/7/2022 下午4:57 @Version 1.0
+ */
+public class ValidParentheses {
+
+  public static boolean isValid(String s) {
+
+    int length = s.length();
+    if (length % 2 == 1) {
+      return false;
+    }
+
+    HashMap<Character, Character> hasMap = new HashMap<>();
+    hasMap.put(')', '(');
+    hasMap.put('}', '{');
+    hasMap.put(']', '[');
+
+    Deque<Character> stack = new LinkedList<>();
+
+    for (int i = 0; i < length; i++) {
+      char c = s.charAt(i);
+      if (hasMap.containsKey(c)) {
+        if (stack.isEmpty() || stack.peek() != hasMap.get(c)) {
+          return false;
+        }
+        stack.pop();
+      } else {
+        stack.push(c);
+      }
+    }
+
+    return stack.isEmpty();
+  }
+
+  public static void main(String[] args) {
+    String s = "()";
+
+    System.out.println(isValid(s));
+
+    String s2 = "()[]{}";
+
+    System.out.println(isValid(s2));
+
+    String s3 = "(]";
+    System.out.println(isValid(s3));
+
+    String s4 = "([)]";
+    System.out.println(isValid(s4));
+
+    String s5 = "{[]}";
+    System.out.println(isValid(s5));
+  }
+}
+```
+
+
+
+------
+
+## 柱状图中最大的矩形(#84)(困难)
+
+https://leetcode.cn/problems/largest-rectangle-in-histogram/solution/zhu-zhuang-tu-zhong-zui-da-de-ju-xing-by-leetcode-/
+
+- 使用单调栈
+
+  ```java
+  public class Solution84 {
+  
+    public int largestRectangleArea(int[] heights) {
+      int n = heights.length;
+      int[] lefts = new int[n];
+      int[] rights = new int[n];
+      int largestArea = 0;
+      // 定义一个栈，保存“候选列表”
+      Deque<Integer> stack = new ArrayDeque<Integer>();
+      // 遍历所有柱子，计算左右边界
+      for (int i = 0; i < n; i++) {
+        while (!stack.isEmpty() && heights[stack.peek()] >= heights[i]) {
+          stack.pop();
+        }
+        lefts[i] = stack.isEmpty() ? -1 : stack.peek();
+        stack.push(i);
+      }
+      stack.clear();
+      for (int i = n - 1; i >= 0; i--) {
+  
+        while (!stack.isEmpty() && heights[stack.peek()] >= heights[i]) {
+  
+          stack.pop();
+        }
+  
+        rights[i] = stack.isEmpty() ? n : stack.peek();
+        stack.push(i);
+      }
+  
+      for (int i = 0; i < n; i++) {
+  
+        int currArea = (rights[i] - lefts[i] - 1) * heights[i];
+  
+        largestArea = currArea > largestArea ? currArea : largestArea;
+      }
+      return largestArea;
+    }
+  
+    public static void main(String[] args) {
+      Solution84 soulution = new Solution84();
+  
+      int[] arr = {6, 7, 5, 2, 4, 5, 9, 3};
+  
+      int i = soulution.largestRectangleArea(arr);
+  
+      System.out.println(i);
+    }
+  }
+  
+  ```
+
+- 单调栈优化
+
+  ```java
+  public class Solution84 {
+  
+    public int largestRectangleArea(int[] heights) {
+  
+      int n = heights.length;
+      int[] lefts = new int[n];
+      int[] rights = new int[n];
+  
+      for (int i = 0; i < n; i++) {
+        rights[i] = n;
+      }
+  
+      int largestArea = 0;
+  
+      Deque<Integer> stack = new ArrayDeque<Integer>();
+  
+      for (int i = 0; i < n; i++) {
+        while (!stack.isEmpty() && heights[stack.peek()] >= heights[i]) {
+          rights[stack.pop()] = i;
+        }
+        lefts[i] = stack.isEmpty() ? -1 : stack.peek();
+        stack.push(i);
+      }
+      
+      for (int i = 0; i < n; i++) {
+        int currArea = (rights[i] - lefts[i] - 1) * heights[i];
+        largestArea = currArea > largestArea ? currArea : largestArea;
+      }
+  
+      return largestArea;
+    }
+  
+    public static void main(String[] args) {
+      Solution84 soulution = new Solution84();
+  
+      int[] arr = {6, 7, 5, 2, 4, 5, 9, 3};
+  
+      int i = soulution.largestRectangleArea(arr);
+  
+      System.out.println(i);
+    }
+  }
+  
+  ```
+
+  > **为什么不用Stack?用Deque**https://mp.weixin.qq.com/s/Ba8jrULf8NJbENK6WGrVWg
+
+------
+
+# 排序关问题
+
+## 数组中的第K个最大元素(#215)
+
+```
+给定整数数组 nums 和整数 k，请返回数组中第 k 个最大的元素。
+
+请注意，你需要找的是数组排序后的第 k 个最大的元素，而不是第 k 个不同的元素。
+
+你必须设计并实现时间复杂度为 O(n) 的算法解决此问题。
+
+示例 1:
+输入: [3,2,1,5,6,4], k = 2
+输出: 5
+
+
+示例 2:
+输入: [3,2,3,1,2,4,5,5,6], k = 4
+输出: 4
+```
+
+- 基于快速排序的选择
+
+  ```java
+  public class Solution215 {
+  
+    public int findKthLargest(int[] nums, int k) {
+      return quickSelect(nums, 0, nums.length - 1, nums.length - k);
+    }
+  
+    public int quickSelect(int[] nums, int start, int end, int index) {
+  
+      int q = randomPatition(nums, start, end);
+      if (q == index) {
+        return nums[q];
+      } else {
+        return q > index
+            ? quickSelect(nums, start, q - 1, index)
+            : quickSelect(nums, q + 1, end, index);
+      }
+    }
+  
+    public int randomPatition(int[] nums, int start, int end) {
+      Random random = new Random();
+      int randIndex = start + random.nextInt(end - start + 1);
+      swap(nums, start, end);
+      return partition(nums, start, end);
+    }
+  
+    public int partition(int[] nums, int start, int end) {
+  
+      int left = start;
+      int right = end;
+      int pivot = nums[start];
+  
+      while (left < right) {
+        while (left < right) {
+  
+          while (left < right && nums[right] >= pivot) {
+            right--;
+          }
+  
+          nums[left] = nums[right];
+          while (left < right && nums[left] <= pivot) {
+            left++;
+          }
+          nums[right] = nums[left];
+        }
+      }
+  
+      nums[left] = pivot;
+      return left;
+    }
+  
+    public void swap(int[] nums, int i, int j) {
+  
+      int tmp = nums[i];
+      nums[i] = nums[j];
+      nums[j] = tmp;
+    }
+  
+    public static void main(String[] args) {
+      int[] num1 = {3, 2, 1, 5, 6, 4};
+      int k1 = 2;
+  
+      int[] num2 = {3, 2, 3, 1, 2, 4, 5, 5, 6};
+      int k2 = 4;
+  
+      Solution215 solution = new Solution215();
+  
+      int r1 = solution.findKthLargest(num1, k1);
+      System.out.println(r1); //5
+  
+      int r2 = solution.findKthLargest(num2, k2);
+      System.out.println(r2); //4
+    }
+  }
+  ```
+
+  
