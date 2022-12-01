@@ -1964,7 +1964,7 @@ https://leetcode.cn/problems/largest-rectangle-in-histogram/solution/zhu-zhuang-
 
 # 排序关问题
 
-## 数组中的第K个最大元素(#215)
+## 数组中的第K个最大元素(#215)(中等)
 
 ```
 给定整数数组 nums 和整数 k，请返回数组中第 k 个最大的元素。
@@ -2007,7 +2007,7 @@ https://leetcode.cn/problems/largest-rectangle-in-histogram/solution/zhu-zhuang-
     public int randomPatition(int[] nums, int start, int end) {
       Random random = new Random();
       int randIndex = start + random.nextInt(end - start + 1);
-      swap(nums, start, end);
+      swap(nums, start, randIndex);
       return partition(nums, start, end);
     }
   
@@ -2017,20 +2017,18 @@ https://leetcode.cn/problems/largest-rectangle-in-histogram/solution/zhu-zhuang-
       int right = end;
       int pivot = nums[start];
   
-      while (left < right) {
         while (left < right) {
   
-          while (left < right && nums[right] >= pivot) {
-            right--;
-          }
+            while (left < right && nums[right] >= pivot) {
+                right--;
+            }
   
-          nums[left] = nums[right];
-          while (left < right && nums[left] <= pivot) {
-            left++;
-          }
-          nums[right] = nums[left];
+            nums[left] = nums[right];
+            while (left < right && nums[left] <= pivot) {
+                left++;
+            }
+            nums[right] = nums[left];
         }
-      }
   
       nums[left] = pivot;
       return left;
@@ -2060,5 +2058,789 @@ https://leetcode.cn/problems/largest-rectangle-in-histogram/solution/zhu-zhuang-
     }
   }
   ```
-
   
+
+## 颜色分类(#75)(中等)
+
+```
+给定一个包含红色、白色和蓝色、共 n 个元素的数组 nums ，原地对它们进行排序，使得相同颜色的元素相邻，并按照红色、白色、蓝色顺序排列。
+
+我们使用整数 0、 1 和 2 分别表示红色、白色和蓝色。
+
+必须在不使用库内置的 sort 函数的情况下解决这个问题。
+
+示例 1：
+
+输入：nums = [2,0,2,1,1,0]
+输出：[0,0,1,1,2,2]
+
+示例 2：
+
+输入：nums = [2,0,1]
+输出：[0,1,2]
+```
+
+基于快速排序
+
+```java
+public void sortColors(int[] nums) {
+    int left = 0, right = nums.length - 1;
+    int i = left;
+    while ( left < right && i <= right ){
+        while ( i <= right && nums[i] == 2 )
+            swap( nums, i, right-- );
+        if ( nums[i] == 0 )
+            swap( nums, i, left++ );
+        i++;
+    }
+}
+
+public void swap(int[] nums, int start, int end) {
+    int tmp = nums[start];
+    nums[start] = nums[end];
+    nums[end] = tmp;
+}
+```
+
+## 合并区间(#56)(中等)
+
+```
+以数组 intervals 表示若干个区间的集合，其中单个区间为 intervals[i] = [starti, endi] 。请你合并所有重叠的区间，并返回 一个不重叠的区间数组，该数组需恰好覆盖输入中的所有区间 。
+
+示例 1：
+
+输入：intervals = [[1,3],[2,6],[8,10],[15,18]]
+输出：[[1,6],[8,10],[15,18]]
+解释：区间 [1,3] 和 [2,6] 重叠, 将它们合并为 [1,6].
+
+示例 2：
+
+输入：intervals = [[1,4],[4,5]]
+输出：[[1,5]]
+解释：区间 [1,4] 和 [4,5] 可被视为重叠区间。
+```
+
+```java
+public class MergeIntervals {
+    public int[][] merge(int[][] intervals) {
+        List<int[]> result = new ArrayList<int[]>();
+        // 先对原数组按左边界排序
+        Arrays.sort(intervals, new Comparator<int[]>() {
+            @Override
+            public int compare(int[] o1, int[] o2) {
+                return o1[0] - o2[0]; 
+            }
+        });
+        // 遍历排序后的数组，逐个判断合并
+        for ( int[] interval: intervals ){
+            int left = interval[0], right = interval[1];
+            int length = result.size();
+            if ( length == 0 || left > result.get(length - 1)[1] ){
+                result.add(interval);
+            } else {
+                int mergedLeft = result.get(length - 1)[0];
+                int mergedRight = Math.max( result.get(length - 1)[1], right );
+                result.set( length - 1, new int[]{mergedLeft, mergedRight} );
+            }
+        }
+        return result.toArray(new int[result.size()][]);
+    }
+}
+
+```
+
+------
+
+# 二叉树及递归
+
+## 数和二叉树结构
+
+### 树
+
+### 二叉树
+
+### 递归
+
+### 二叉树的遍历
+
+### 平衡二叉树
+
+### 红黑树
+
+### B树
+
+### B+树
+
+## 翻转二叉树(#226)(简单)
+
+```
+给你一棵二叉树的根节点 root ，翻转这棵二叉树，并返回其根节点
+
+输入：root = [4,2,7,1,3,6,9]
+输出：[4,7,2,9,6,3,1]
+
+输入：root = [2,1,3]
+输出：[2,3,1]
+
+输入：root = []
+输出：[]
+```
+
+- 方法一:先序遍历
+
+  ```java
+  public TreeNode invertTree(TreeNode root) {
+      if ( root == null ) return null;
+      TreeNode temp = root.left;
+      root.left = root.right;
+      root.right = temp;
+      invertTree( root.left );
+      invertTree( root.right );
+      return root;
+  }
+  ```
+
+- 方法二:后序遍历
+
+  ```java
+  public TreeNode invertTree(TreeNode root) {
+      if ( root == null ) return null;
+      TreeNode left = invertTree(root.left);
+      TreeNode right = invertTree(root.right);
+      root.left = right;
+      root.right = left;
+      return root;
+  }
+  ```
+
+## 验证二叉树(#98)(中等)
+
+```
+给你一个二叉树的根节点 root ，判断其是否是一个有效的二叉搜索树。
+
+有效 二叉搜索树定义如下：
+
+节点的左子树只包含 小于 当前节点的数。
+节点的右子树只包含 大于 当前节点的数。
+所有左子树和右子树自身必须也是二叉搜索树。
+
+输入：root = [2,1,3]
+输出：true
+
+输入：root = [5,1,4,null,null,3,6]
+输出：false
+解释：根节点的值是 5 ，但是右子节点的值是 4 。
+```
+
+# 贪心算法
+
+## 跳跃游戏(#55)(中等)
+
+```
+给定一个非负整数数组 nums ，你最初位于数组的 第一个下标 。
+
+数组中的每个元素代表你在该位置可以跳跃的最大长度。
+
+判断你是否能够到达最后一个下标。
+
+示例 1：
+
+输入：nums = [2,3,1,1,4]
+输出：true
+解释：可以先跳 1 步，从下标 0 到达下标 1, 然后再从下标 1 跳 3 步到达最后一个下标。
+
+示例 2：
+
+输入：nums = [3,2,1,0,4]
+输出：false
+解释：无论怎样，总会到达下标为 3 的位置。但该下标的最大跳跃长度是 0 ， 所以永远不可能到达最后一个下标。
+```
+
+```java
+public class JumpGame {
+    // 贪心策略：维护当前能到的最远位置
+    public boolean canJump(int[] nums) {
+        int farthest = 0;
+        // 遍历数组，更新farthest
+        for (int i = 0; i < nums.length; i++ ){
+            if (i <= farthest){
+                farthest = Math.max(farthest, i + nums[i]);
+                if (farthest >= nums.length - 1)
+                    return true;
+            } else {
+                return false;
+            }
+        }
+        return false;
+    }
+}
+
+```
+
+## 跳跃游戏II(#45)
+
+```
+给你一个非负整数数组 nums ，你最初位于数组的第一个位置。
+
+数组中的每个元素代表你在该位置可以跳跃的最大长度。
+
+你的目标是使用最少的跳跃次数到达数组的最后一个位置。
+
+假设你总是可以到达数组的最后一个位置。
+
+示例 1:
+
+输入: nums = [2,3,1,1,4]
+输出: 2
+解释: 跳到最后一个位置的最小跳跃数是 2。
+     从下标为 0 跳到下标为 1 的位置，跳 1 步，然后跳 3 步到达数组的最后一个位置。
+     
+示例 2:
+
+输入: nums = [2,3,0,1,4]
+输出: 2
+```
+
+## 任务调度器(#621)(中等)
+
+```
+给你一个用字符数组 tasks 表示的 CPU 需要执行的任务列表。其中每个字母表示一种不同种类的任务。任务可以以任意顺序执行，并且每个任务都可以在 1 个单位时间内执行完。在任何一个单位时间，CPU 可以完成一个任务，或者处于待命状态。
+
+然而，两个 相同种类 的任务之间必须有长度为整数 n 的冷却时间，因此至少有连续 n 个单位时间内 CPU 在执行不同的任务，或者在待命状态。
+
+你需要计算完成所有任务所需要的 最短时间 。
+
+示例 1：
+
+输入：tasks = ["A","A","A","B","B","B"], n = 2
+输出：8
+解释：A -> B -> (待命) -> A -> B -> (待命) -> A -> B
+     在本示例中，两个相同类型任务之间必须间隔长度为 n = 2 的冷却时间，而执行一个任务只需要一个单位时间，所以中间出现了（待命）状态。 
+     
+示例 2：
+
+输入：tasks = ["A","A","A","B","B","B"], n = 0
+输出：6
+解释：在这种情况下，任何大小为 6 的排列都可以满足要求，因为 n = 0
+["A","A","A","B","B","B"]
+["A","B","A","B","A","B"]
+["B","B","B","A","A","A"]
+...
+诸如此类
+
+示例 3：
+
+输入：tasks = ["A","A","A","A","A","A","B","C","D","E","F","G"], n = 2
+输出：16
+解释：一种可能的解决方案是：
+     A -> B -> C -> A -> D -> E -> A -> F -> G -> A -> (待命) -> (待命) -> A -> (待命) -> (待命) -> A
+```
+
+------
+
+# 动态规划
+
+## 0-1背包问题
+
+## 买卖股票的最佳时机(#121)(简单)
+
+```
+给定一个数组 prices ，它的第 i 个元素 prices[i] 表示一支给定股票第 i 天的价格。
+
+你只能选择 某一天 买入这只股票，并选择在 未来的某一个不同的日子 卖出该股票。设计一个算法来计算你所能获取的最大利润。
+
+返回你可以从这笔交易中获取的最大利润。如果你不能获取任何利润，返回 0 。
+
+示例 1：
+
+输入：[7,1,5,3,6,4]
+输出：5
+解释：在第 2 天（股票价格 = 1）的时候买入，在第 5 天（股票价格 = 6）的时候卖出，最大利润 = 6-1 = 5 。
+     注意利润不能是 7-1 = 6, 因为卖出价格需要大于买入价格；同时，你不能在买入前卖出股票。
+     
+示例 2：
+
+输入：prices = [7,6,4,3,1]
+输出：0
+解释：在这种情况下, 没有交易完成, 所以最大利润为 0。
+```
+
+```java
+public int maxProfit(int[] prices){
+    int minPrice = Integer.MAX_VALUE; 
+    int maxProfit = 0;
+    // 遍历数组，以每天的价格作为卖出点，进行比较
+    for (int i = 0; i < prices.length; i++){
+        minPrice = Math.min(minPrice, prices[i]);
+        maxProfit = Math.max(maxProfit, prices[i] - minPrice);
+    }
+    return maxProfit;
+}
+```
+
+## 爬楼梯(#70)(简单)
+
+```
+假设你正在爬楼梯。需要 n 阶你才能到达楼顶。
+
+每次你可以爬 1 或 2 个台阶。你有多少种不同的方法可以爬到楼顶呢？
+
+示例 1：
+
+输入：n = 2
+输出：2
+解释：有两种方法可以爬到楼顶。
+1. 1 阶 + 1 阶
+2. 2 阶
+
+示例 2：
+
+输入：n = 3
+输出：3
+解释：有三种方法可以爬到楼顶。
+1. 1 阶 + 1 阶 + 1 阶
+2. 1 阶 + 2 阶
+3. 2 阶 + 1 阶
+```
+
+```java
+public class ClimbStairsSolution {
+
+  public static int climbStairs(int n) {
+
+    int p = 0, q = 0, r = 1;
+    for (int i = 0; i < n; i++) {
+      p = q;
+      q = r;
+      r = p + q;
+    }
+
+    return r;
+  }
+
+  public static void main(String[] args) {
+    System.out.println(climbStairs(2));		//2
+
+    System.out.println(climbStairs(3));		//3
+	
+    System.out.println(climbStairs(4));		//5
+
+    System.out.println(climbStairs(5));		//8
+  }
+}
+```
+
+## 最长公共子序列（#1143）(中等)
+
+```
+给定两个字符串 text1 和 text2，返回这两个字符串的最长 公共子序列 的长度。如果不存在 公共子序列 ，返回 0 。
+
+一个字符串的 子序列 是指这样一个新的字符串：它是由原字符串在不改变字符的相对顺序的情况下删除某些字符（也可以不删除任何字符）后组成的新字符串。
+
+例如，"ace" 是 "abcde" 的子序列，但 "aec" 不是 "abcde" 的子序列。
+两个字符串的 公共子序列 是这两个字符串所共同拥有的子序列。
+
+示例 1：
+
+输入：text1 = "abcde", text2 = "ace" 
+输出：3  
+解释：最长公共子序列是 "ace" ，它的长度为 3 。
+
+示例 2：
+
+输入：text1 = "abc", text2 = "abc"
+输出：3
+解释：最长公共子序列是 "abc" ，它的长度为 3 。
+
+示例 3：
+
+输入：text1 = "abc", text2 = "def"
+输出：0
+解释：两个字符串没有公共子序列，返回 0 。
+```
+
+```java
+public class LCS {
+    // 动态规划实现
+    public int longestCommonSubsequence(String text1, String text2) {
+        int length1 = text1.length();
+        int length2 = text2.length();
+        int[][] dp = new int[length1+1][length2+1]; 
+        // 遍历所有状态位置
+        for (int i = 1; i <= length1; i++){
+            for (int j = 1; j <= length2; j++){
+                // 状态转移
+                if ( text1.charAt(i-1) == text2.charAt(j-1) ){
+                    dp[i][j] = dp[i-1][j-1] + 1;
+                } else {
+                    dp[i][j] = Math.max( dp[i-1][j], dp[i][j-1] );
+                }
+            }
+        }
+        return dp[length1][length2];
+    }
+}
+
+```
+
+## 打家劫舍（#198）(中等)
+
+```
+你是一个专业的小偷，计划偷窃沿街的房屋。每间房内都藏有一定的现金，影响你偷窃的唯一制约因素就是相邻的房屋装有相互连通的防盗系统，如果两间相邻的房屋在同一晚上被小偷闯入，系统会自动报警。
+
+给定一个代表每个房屋存放金额的非负整数数组，计算你 不触动警报装置的情况下 ，一夜之内能够偷窃到的最高金额。
+
+示例 1：
+
+输入：[1,2,3,1]
+输出：4
+解释：偷窃 1 号房屋 (金额 = 1) ，然后偷窃 3 号房屋 (金额 = 3)。
+     偷窃到的最高金额 = 1 + 3 = 4 。
+     
+示例 2：
+
+输入：[2,7,9,3,1]
+输出：12
+解释：偷窃 1 号房屋 (金额 = 2), 偷窃 3 号房屋 (金额 = 9)，接着偷窃 5 号房屋 (金额 = 1)。
+     偷窃到的最高金额 = 2 + 9 + 1 = 12 。
+```
+
+```java
+public int rob(int[] nums) {
+    int n = nums.length;
+    if (nums == null || n == 0) return 0;
+    int pre2 = 0;
+    int pre1 = nums[0];
+    // 遍历状态，依次转移
+    for (int i = 1; i < n; i++){
+        int curr = Math.max(pre1, pre2 + nums[i]);
+        pre2 = pre1;
+        pre1 = curr;
+    }
+    return pre1; 
+}
+
+```
+
+## 零钱兑换（#322）(中等)
+
+```
+给你一个整数数组 coins ，表示不同面额的硬币；以及一个整数 amount ，表示总金额。
+
+计算并返回可以凑成总金额所需的 最少的硬币个数 。如果没有任何一种硬币组合能组成总金额，返回 -1 。
+
+你可以认为每种硬币的数量是无限的。
+
+示例 1：
+
+输入：coins = [1, 2, 5], amount = 11
+输出：3 
+解释：11 = 5 + 5 + 1
+
+示例 2：
+
+输入：coins = [2], amount = 3
+输出：-1
+
+示例 3：
+
+输入：coins = [1], amount = 0
+输出：0
+```
+
+```java
+// 动态规划
+public int coinChange(int[] coins, int amount) {
+    int n = coins.length;
+    int[] dp = new int[amount + 1];
+    dp[0] = 0;
+
+    for (int i = 1; i <= amount; i++){
+        int minCoinNum = Integer.MAX_VALUE;
+        // 遍历所有硬币面值，作为可能的“最后一步”
+        for (int coin: coins){
+            if (coin <= i && dp[i - coin] != -1){
+                minCoinNum = Math.min(minCoinNum, dp[i - coin] + 1);
+            }
+        }
+        dp[i] = minCoinNum == Integer.MAX_VALUE ? -1 : minCoinNum;
+    }
+    return dp[amount];
+}
+```
+
+# 回溯算法
+
+## 八皇后问题
+
+```java
+// 定义辅助集合
+HashSet<Integer> cols = new HashSet<>();
+HashSet<Integer> diags1 = new HashSet<>();
+HashSet<Integer> diags2 = new HashSet<>();
+
+// 方法二：回溯法
+public List<int[]> eightQueens(){
+    ArrayList<int[]> result = new ArrayList<>();
+    int[] solution = new int[8];
+    Arrays.fill(solution, -1);    // 初始填充-1 
+    // 传入行号0，开始调用
+    backtrack(result, solution, 0);
+    return result;
+}
+// 定义一个回溯方法
+private void backtrack(ArrayList<int[]> result, int[] solution, int row){
+    if (row >= 8){
+        result.add(Arrays.copyOf(solution, 8));
+    } else {
+        // 遍历每一列，考察可能的皇后位置
+        for (int column = 0; column < 8; column ++){
+            if (cols.contains(column))
+                continue;
+            int diag1 = row - column;
+            if (diags1.contains(diag1))
+                continue;
+            int diag2 = row + column;
+            if (diags2.contains(diag2))
+                continue;
+            solution[row] = column;    // 当前位置可以放置皇后
+            cols.add(column);
+            diags1.add(diag1);
+            diags2.add(diag2);
+            // 递归调用，找下一行的皇后
+            backtrack(result, solution, row + 1);
+            // 回溯状态
+            solution[row] = -1;
+            cols.remove(column);
+            diags1.remove(diag1);
+            diags2.remove(diag2);
+        }
+    }
+}
+
+```
+
+## 全排列(#46)(中等)
+
+```
+给定一个不含重复数字的数组 nums ，返回其 所有可能的全排列 。你可以 按任意顺序 返回答案。
+
+示例 1：
+
+输入：nums = [1,2,3]
+输出：[[1,2,3],[1,3,2],[2,1,3],[2,3,1],[3,1,2],[3,2,1]]
+
+示例 2：
+
+输入：nums = [0,1]
+输出：[[0,1],[1,0]]
+
+示例 3：
+
+输入：nums = [1]
+输出：[[1]]
+```
+
+```java
+public List<List<Integer>> permute(int[] nums){
+    ArrayList<List<Integer>> result = new ArrayList<>();
+    // 定义一个可行的排列，并复制nums填入
+    ArrayList<Integer> solution = new ArrayList<>();
+    for (int num: nums) {
+        solution.add(num);
+    }
+    // 从0位置开始填充
+    backtrack(result, solution, 0);
+    return result;
+}
+public void backtrack(List<List<Integer>> result, List<Integer> solution, int i){
+    int n = solution.size();
+    if (i >= n){
+        result.add(new ArrayList<>(solution));
+    } else {
+        for (int j = i; j < n; j++){
+            Collections.swap(solution, i, j);
+            // 递归调用，继续填充后面的位置
+            backtrack(result, solution, i + 1);
+            // 回溯
+            Collections.swap(solution, i, j);
+        }
+    }
+}
+
+```
+
+## 电话号码的字母组合（#17）(中等)
+
+```
+给定一个仅包含数字 2-9 的字符串，返回所有它能表示的字母组合。答案可以按 任意顺序 返回。
+
+给出数字到字母的映射如下（与电话按键相同）。注意 1 不对应任何字母。
+
+1  2  3
+4  5  6
+7  8  9
+*  0  #
+
+示例 1：
+
+输入：digits = "23"
+输出：["ad","ae","af","bd","be","bf","cd","ce","cf"]
+
+示例 2：
+
+输入：digits = ""
+输出：[]
+
+示例 3：
+
+输入：digits = "2"
+输出：["a","b","c"]
+```
+
+```java
+public class LetterCombinationsOfPhoneNumber {
+    // 定义一个HashMap，保存数字对应的字母
+    HashMap<Character, String> numberMap = new HashMap<Character, String>() {
+        {
+            put('2', "abc");
+            put('3', "def");
+            put('4', "ghi");
+            put('5', "jkl");
+            put('6', "mno");
+            put('7', "pqrs");
+            put('8', "tuv");
+            put('9', "wxyz");
+       }
+    };
+    public List<String> letterCombinations(String digits) {
+        ArrayList<String> result = new ArrayList<>();
+        if ("".equals(digits)) return result;
+        StringBuffer combination = new StringBuffer();
+        // 从第一个数字开始回溯处理
+        backtrack(digits, result, combination, 0);
+        return result;
+    }
+    // 定义一个回溯方法
+    public void backtrack(String digits, List<String> result, StringBuffer combination, int i){
+        int n = digits.length();
+        if (i >= n){
+            result.add(combination.toString());
+        } else {
+            char digit = digits.charAt(i);
+            String letters = numberMap.get(digit);
+            // 遍历所有可能的字母
+            for (int j = 0; j < letters.length(); j++){
+                combination.append(letters.charAt(j));
+                // 递归调用，继续处理后续数字
+                backtrack(digits, result, combination, i + 1);
+                // 回溯
+                combination.deleteCharAt(i); 
+            }
+        }
+    }
+}
+
+```
+
+------
+
+# 深度优先搜索和广度优先搜索
+
+## 二叉树的序列化与反序列化(#297)(困难)
+
+## 课程表(#207)(中等)
+
+# 位运算和数学方法
+
+## 2的幂(#231)(简单)
+
+```
+给你一个整数 n，请你判断该整数是否是 2 的幂次方。如果是，返回 true ；否则，返回 false 。
+
+如果存在一个整数 x 使得 n == 2x ，则认为 n 是 2 的幂次方。
+
+示例 1：
+
+输入：n = 1
+输出：true
+解释：20 = 1
+
+示例 2：
+
+输入：n = 16
+输出：true
+解释：24 = 16
+
+示例 3：
+
+输入：n = 3
+输出：false
+
+示例 4：
+
+输入：n = 4
+输出：true
+
+示例 5：
+
+输入：n = 5
+输出：false
+```
+
+## 汉明距离(#461)(简单)
+
+```
+两个整数之间的 汉明距离 指的是这两个数字对应二进制位不同的位置的数目。
+
+给你两个整数 x 和 y，计算并返回它们之间的汉明距离。
+
+ 
+
+示例 1：
+
+输入：x = 1, y = 4
+输出：2
+解释：
+1   (0 0 0 1)
+4   (0 1 0 0)
+       ↑   ↑
+上面的箭头指出了对应二进制位不同的位置。
+示例 2：
+
+输入：x = 3, y = 1
+输出：1
+
+```
+
+## 可爱的小猪(#458)(困难)
+
+```
+有 buckets 桶液体，其中 正好有一桶 含有毒药，其余装的都是水。它们从外观看起来都一样。为了弄清楚哪只水桶含有毒药，你可以喂一些猪喝，通过观察猪是否会死进行判断。不幸的是，你只有 minutesToTest 分钟时间来确定哪桶液体是有毒的。
+
+喂猪的规则如下：
+
+选择若干活猪进行喂养
+可以允许小猪同时饮用任意数量的桶中的水，并且该过程不需要时间。
+小猪喝完水后，必须有 minutesToDie 分钟的冷却时间。在这段时间里，你只能观察，而不允许继续喂猪。
+过了 minutesToDie 分钟后，所有喝到毒药的猪都会死去，其他所有猪都会活下来。
+重复这一过程，直到时间用完。
+给你桶的数目 buckets ，minutesToDie 和 minutesToTest ，返回 在规定时间内判断哪个桶有毒所需的 最小 猪数 。
+
+
+示例 1：
+
+输入：buckets = 1000, minutesToDie = 15, minutesToTest = 60
+输出：5
+
+示例 2：
+
+输入：buckets = 4, minutesToDie = 15, minutesToTest = 15
+输出：2
+
+示例 3：
+
+输入：buckets = 4, minutesToDie = 15, minutesToTest = 30
+输出：2
+```
+
